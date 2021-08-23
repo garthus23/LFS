@@ -9,6 +9,6 @@ rm /bin/sh
 ln -s /bin/bash /bin/sh
 
 ### create the root directory ###
-mkdir -pv $LFS
+mkdir -pv /mnt/lfs
 
 echo "Now you can create partitions and filesystem on your lfs disk"
