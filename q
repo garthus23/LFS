@@ -29,14 +29,12 @@ else
 	echo -e "${RED}Error ${WHITE}: Problem extracting sources"
 	exit 2
 fi
-
-### checksum sources validation ###
 pushd $LFS/sources
 	echo -e "checksum validation..."
-	md5sum --quiet -c md5sums 2> checksum.txt
+	md5sum --quiet -c md5sums 2> error.txt
 popd > /dev/null
 
-if [[ $(grep -c ^ $LFS/sources/checksum.txt) > 0 ]]
+if [[ $(grep -c ^ $LFS/sources/error.txt) > 0 ]]
 then
 	echo -e "${RED}Error ${WHITE}: checksum incorrect"
 	exit 3
