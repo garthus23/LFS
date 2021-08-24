@@ -400,4 +400,47 @@ echo -e "Make installed [${GREEN}OK${WHITE}]"
 
 #### Patch-2.7.6 ####
 
+echo -e "Installing patch..."
+tar xf $LFS/sources/patch-2.7.6.tar.xz -C $LFS/sources/
+cd $LFS/sources/patch-2.7.6
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--build=$(build-aux/config.guess) >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/patch-2.7.6
+echo -e "Patch installed [${GREEN}OK${WHITE}]"
 
+#### Sed-4.8 ####
+
+echo -e "Installing sed..."
+tar xf $LFS/sources/sed-4.8.tar.xz -C $LFS/sources/
+cd $LFS/sources/sed-4.8
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--bindir=/bin >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/sed-4.8
+echo -e "Sed installed [${GREEN}OK${WHITE}]"
+
+#### Tar-1.34 ####
+
+echo -e "Installing Tar..."
+tar xf $LFS/sources/tar-1.34.tar.xz -C $LFS/sources/
+cd $LFS/sources/tar-1.34
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--build=$(build-aux/config.guess) \
+--bindir=/bin >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/tar-1.34
+echo -e "Tar installed [${GREEN}OK${WHITE}]"
+
+
+
+EOZ
