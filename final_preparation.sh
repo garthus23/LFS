@@ -441,6 +441,93 @@ cd $LFS/sources
 rm -rf $LFS/sources/tar-1.34
 echo -e "Tar installed [${GREEN}OK${WHITE}]"
 
+#### Xz-5.2.5 ####
+
+echo -e "Installing Xz..."
+tar xf $LFS/sources/xz-5.2.5.tar.xz -C $LFS/sources/
+cd $LFS/sources/xz-5.2.5
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--build=$(build-aux/config.guess) \
+--disable-static \
+--docdir=/usr/share/doc/xz-5.2.5 >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+mv $LFS/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $LFS/bin
+mv $LFS/usr/lib/liblzma.so.* $LFS/lib
+ln -sf ../../lib/$(readlink $LFS/usr/lib/liblzma.so) $LFS/usr/lib/liblzma.so
+cd $LFS/sources
+rm -rf $LFS/sources/xz-5.2.5
+echo -e "Xz installed [${GREEN}OK${WHITE}]"
+
+#### Binutils-2.36.1 ####
+
+echo -e "Installing Binutils..."
+tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
+cd $LFS/sources/binutils-2.36.1
+mkdir build
+cd build
+../configure \
+--prefix=/usr \
+--build=$(../co0nfig.guess) \
+--host=$LFS_TGT \
+--disable-nls \
+--enable-shared \
+--disable-werror \
+--enable-64-bit-bfd >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib
+cd $LFS/sources
+rm -rf $LFS/sources/binutils-2.36.1
+echo -e "Binutils installed [${GREEN}OK${WHITE}]"
+
+
+#### GCC-10.2.0 ####
+
+echo -e "Installing Gcc..."
+tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
+cd $LFS/sources/gcc-10.2.0
+tar -xf ../mpfr-4.1.0.tar.xz
+mv mpfr-4.1.0 mpfr
+tar -xf ../gmp-6.2.1.tar.xz
+mv gmp-6.2.1 gmp
+tar -xf ../mpc-1.2.1.tar.gz
+mv mpc-1.2.1 mpc
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+  ;;
+esac
+mkdir build
+cd build
+mkdir -p $LFS_TGT/libgcc
+ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
+../configure \
+--build=$(../config.guess) \
+--host=$LFS_TGT \
+--prefix=/usr \
+CC_FOR_TARGET=$LFS_TGT-gcc \
+--with-build-sysroot=$LFS \
+--enable-initfini-array \
+--disable-nls \
+--disable-multilib \
+--disable-decimal-float \
+--disable-libatomic \
+--disable-libgomp \
+--disable-libquadmath \
+--disable-libssp \
+--disable-libvtv \
+--disable-libstdcxx \
+--enable-languages=c,c++ >> $LOG 2>&1
+make >> $LOG 2>&
+make DESTDIR=$LFS install >> $LOG 2>&
+ln -sv gcc $LFS/usr/bin/cc
+cd $LFS/sources
+rm -rf $LFS/sources/gcc-10.2.0
+echo -e "Gcc installed [${GREEN}OK${WHITE}]"
+
+
 
 
 EOZ
