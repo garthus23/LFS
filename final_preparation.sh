@@ -231,8 +231,8 @@ sed -i s/mawk// configure >> $LOG 2>&1
 mkdir build
 pushd build
   ../configure
-  make -C include 
-  make -C progs tic
+  make -C include >> log.txt 2>&1
+  make -C progs tic >> log.txt 2>&1
 popd
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
@@ -249,6 +249,155 @@ make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install >> $LOG 2>&1
 echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
 mv $LFS/usr/lib/libncursesw.so.6* $LFS/lib
 ln -sf ../../lib/$(readlink $LFS/usr/lib/libncursesw.so) $LFS/usr/lib/libncursesw
+cd $LFS/sources
+rm -rf $LFS/sources/ncurses-6.2
+echo -e "ncursed installed [${GREEN}OK${WHITE}]"
+
+#### bash-5.1 ####
+
+echo -e "Installing bash-5.1..."
+tar xf $LFS/sources/bash-5.1.tar.gz -C $LFS/sources/
+cd $LFS/sources/bash-5.1
+./configure --prefix=/usr \
+--build=$(support/config.guess) \
+--host=$LFS_TGT \
+--without-bash-malloc >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+mv $LFS/usr/bin/bash $LFS/bin/bash
+ln -sv bash $LFS/bin/sh
+cd $LFS/sources
+rm -rf $LFS/sources/bash-5.1
+echo -e "bash installed [${GREEN}OK${WHITE}]"
+
+#### Coreutils-8.32 ####
+
+echo -e "Installing Coreutils..."
+tar xf $LFS/sources/coreutils-8.32.tar.xz -C $LFS/sources/
+cd $LFS/sources/coreutils-8.32
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--build=$(build-aux/config.guess) \
+--enable-install-program=hostname \
+--enable-no-install-program=kill,uptime >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+mv $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
+mv $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
+mv $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
+mv $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
+mv $LFS/usr/bin/chroot $LFS/usr/sbin
+mkdir -p $LFS/usr/share/man/man8 
+mv $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
+cd $LFS/sources
+rm -rf $LFS/sources/coreutils-8.32
+echo -e "coreutils installed [${GREEN}OK${WHITE}]"
+
+#### Diffutils-3.7 ####
+
+echo -e "Installing Coreutils..."
+tar xf $LFS/sources/diffutils-3.7.tar.xz -C $LFS/sources/
+cd $LFS/sources/diffutils-3.7
+./configure --prefix=/usr --host=$LFS_TGT >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/diffutils-3.7
+echo -e "diffutils installed [${GREEN}OK${WHITE}]"
+
+#### File-5.39 ####
+
+echo -e "Installing File..."
+tar xf $LFS/sources/file-5.39.tar.gz -C $LFS/sources/
+cd $LFS/sources/file-5.39
+mkdir build
+pushd build
+../configure --disable-bzlib \
+--disable-libseccomp \
+--disable-xzlib \
+--disable-zlib >> log.txt 2>&1
+make >> log.txt 2>&1
+popd
+./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess) >> $LOG 2>&1
+make FILE_COMPILE=$(pwd)/build/src/file >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/file-5.39
+echo -e "file installed [${GREEN}OK${WHITE}]"
+
+#### Findutils-4.8.0 ####
+
+echo -e "Installing File..."
+tar xf $LFS/sources/findutils-4.8.0.tar.xz -C $LFS/sources/
+cd $LFS/sources/findutils-4.8.0
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--build=$(build-aux/config.guess) >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+mv $LFS/usr/bin/find $LFS/bin
+sed -i 's|find:=${BINDIR}|find:=/bin|' $LFS/usr/bin/updatedb
+cd $LFS/sources
+rm -rf $LFS/sources/findutils-4.8.0
+echo -e "findutils installed [${GREEN}OK${WHITE}]"
+
+#### Gawk-5.1.0 ####
+
+echo -e "Installing Gawk..."
+tar xf $LFS/sources/gawk-5.1.0.tar.xz -C $LFS/sources/
+cd $LFS/sources/gawk-5.1.0
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--build=$(./config.guess) >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/gawk-5.1.0
+echo -e "gawk installled [${GREEN}OK${WHITE}]"
+
+#### Grep-3.6 ####
+
+echo -e "Installing Grep..."
+tar xf $LFS/sources/grep-3.6.tar.xz -C $LFS/sources/
+cd $LFS/sources/grep-3.6
+./configure --prefix=/usr \
+--host=$LFS_TGT \
+--bindir=/bin >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/grep-3.6
+echo -e "Grep installled [${GREEN}OK${WHITE}]"
+
+#### Gzip-1.10 ####
+
+echo -e "Installing Gzip..."
+tar xf $LFS/sources/gzip-1.10.tar.xz -C $LFS/sources/
+cd $LFS/sources/gzip-1.10
+./configure --prefix=/usr --host=$LFS_TGT >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+mv -v $LFS/usr/bin/gzip $LFS/bin
+cd $LFS/sources
+rm -rf $LFS/sources/gzip-1.10
+echo -e "Gzip installed [${GREEN}OK${WHITE}]"
+
+#### Make-4.3 ####
+
+echo -e "Installing make..."
+tar xf $LFS/sources/make-4.3.tar.gz -C $LFS/sources/
+cd $LFS/sources/make-4.3
+./configure --prefix=/usr \
+--without-guile \
+--host=$LFS_TGT \
+--build=$(build-aux/config.guess) >> $LOG 2>&1
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+cd $LFS/sources
+rm -rf $LFS/sources/make-4.3
+echo -e "Make installed [${GREEN}OK${WHITE}]"
+
+#### Patch-2.7.6 ####
 
 
-EOZ
