@@ -776,4 +776,20 @@ rm -rf /usr/share/{info,man,doc}/*
 EOZ
 
 
+#### cleaning and backup CrossToolchain and Temporary Tools ####
+
+umount $LFS/dev{/pts,}
+umount $LFS/{sys,proc,run}
+
+strip --strip-debug $LFS/usr/lib/*
+strip --strip-unneeded $LFS/usr/{,s}bin/*
+strip --strip-unneeded $LFS/tools/bin/*
+
+cd $LFS && tar -cJpf $HOME/lfs-temp-tools-10.1-systemd.tar.xz .
+
+# Restore
+#
+# cd $LFS &&
+# rm -rf ./* &&
+# tar -xpf $HOME/lfs-temp-tools-10.1-systemd.tar.xz
 
