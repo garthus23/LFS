@@ -22,9 +22,9 @@ chroot "$LFS" /usr/bin/env -i \
 HOME=/root \
 TERM="$TERM" \
 PS1='(lfs chroot) \u:\w\$ ' \
-GREEN='\e[32m'
-RED='\e[31m'
-WHITE='\e[0m'
+GREEN='\e[32m' \
+RED='\e[31m' \
+WHITE='\e[0m' \
 PATH=/bin:/usr/bin:/sbin:/usr/sbin \
 /bin/bash --login +h << "EOT"
 
@@ -141,4 +141,4 @@ cat > /etc/ld.so.conf << "EOF"
 EOF
 
 
-
+EOT
