@@ -1,17 +1,7 @@
 #!/bin/bash
 # final preparation
 
-
-LC_ALL=POSIX
 LFS=/mnt/lfs
-HOME=/home/lfs
-TERM=xterm-256color
-LFS_TGT=x86_64-lfs-linux-gnu
-PATH=$LFS/tools/bin:$PATH
-CONFIG_SITE=$LFS/usr/share/config.site
-LOG=/mnt/lfs/sources/log.txt
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-export MAKEFLAGS='-j4'
 
 GREEN='\e[32m'
 RED='\e[31m'
@@ -66,7 +56,37 @@ chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
 
 ################ Building the Cross Compiler #################
 
-sudo -u lfs bash << EOZ 
+sudo -u lfs bash << "EOZ" 
+
+LC_ALL=POSIX
+LFS=/mnt/lfs
+HOME=/home/lfs
+TERM=xterm-256color
+LFS_TGT=x86_64-lfs-linux-gnu
+PATH=$LFS/tools/bin:$PATH
+CONFIG_SITE=$LFS/usr/share/config.site
+LOG=/mnt/lfs/sources/log.txt
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+export MAKEFLAGS='-j4'
+
+
+cat > ~/.bash_profile << "EOF"
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+EOF
+
+cat > ~/.bashrc << "EOF"
+set +h
+umask 022
+LFS=/mnt/lfs
+LC_ALL=POSIX
+LFS_TGT=$(uname -m)-lfs-linux-gnu
+PATH=/usr/bin
+if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
+PATH=$LFS/tools/bin:$PATH
+CONFIG_SITE=$LFS/usr/share/config.site
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+EOF
+
 
 ### Binutils-2.36.1 package ###
 
@@ -550,7 +570,7 @@ HOME=/root \
 TERM="$TERM" \
 PS1='(lfs chroot) \u:\w\$ ' \
 PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-/bin/bash --login +h
+/bin/bash --login +h << "EOZ"
 
 mkdir -p /{boot,home,mnt,opt,srv}
 mkdir -p /etc/{opt,sysconfig}
@@ -646,14 +666,14 @@ CXXFLAGS="-g -O2 -D_GNU_SOURCE" \
 --disable-multilib \
 --disable-nls \
 --host=$(uname -m)-lfs-linux-gnu \
---disable-libstdcxx-pch >> $LOG 2>&1
-make >> $LOG 2>&1
-make install >> $LOG 2>&1
+--disable-libstdcxx-pch >> /log 2>&1
+make >> /log 2>&1
+make install >> /log 2>&1
 cd /sources
 rm -rf gcc-10.2.0
 echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
 
-
+EOZ
 
 
 
