@@ -38,6 +38,7 @@ cd man-pages-5.10
 make install >> /log 2>&1
 cd /sources
 rm -rf man-pages-5.10
+echo -e "Manpages installed [${GREEN}OK${WHITE}]"
 
 ### Iana-Etc-20210202 ###
 
@@ -47,6 +48,7 @@ cd iana-etc-20210202
 cp services protocols /etc
 cd /sources
 rm -rf iana-etc-20210202
+echo -e "Iana-etc installed [${GREEN}OK${WHITE}]"
 
 ### Glibc-2.33 ####
 
@@ -69,6 +71,7 @@ make check >> /log 2>&1
 touch /etc/ld.so.conf
 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 make install >> /log 2>&1
+echo -e "Glibc installed [${GREEN}OK${WHITE}]"
 cp ../nscd/nscd.conf /etc/nscd.conf
 mkdir -p /var/cache/nscd
 install -v -Dm644 ../nscd/nscd.tmpfiles /usr/lib/tmpfiles.d/nscd.conf
