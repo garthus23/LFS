@@ -2,6 +2,7 @@
 # final preparation
 
 LFS=/mnt/lfs
+TERM=xterm-256color
 
 GREEN='\e[32m'
 RED='\e[31m'
