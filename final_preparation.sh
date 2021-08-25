@@ -730,7 +730,7 @@ echo -e "Perl installed [${GREEN}OK${WHITE}]"
 ### Python-3.9.2 ###
 
 echo -e "Installing Python..."
-tar xf /sources/Python-3.9.2 -C /sources/
+tar xf /sources/Python-3.9.2.tar.xz -C /sources/
 cd /sources/Python-3.9.2
 ./configure --prefix=/usr \
 --enable-shared \
@@ -786,8 +786,11 @@ EOZ
 
 #### cleaning and backup CrossToolchain and Temporary Tools ####
 
-umount $LFS/dev{/pts,}
-umount $LFS/{sys,proc,run}
+umount $LFS/run
+umount $LFS/proc
+umount $LFS/sys
+umount $LFS/dev/pts
+umount $LFS/dev
 
 strip --strip-debug $LFS/usr/lib/*
 strip --strip-unneeded $LFS/usr/{,s}bin/*
