@@ -206,7 +206,7 @@ $LFS/tools/libexec/gcc/$LFS_TGT/10.2.0/install-tools/mkheaders
 echo -e "Installing Libstdc++ from GCC-10.2.0..."
 tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
 cd $LFS/sources/gcc-10.2.0
-mkdir -v build
+mkdir build
 cd build
 ../libstdc++-v3/configure \
 --host=$LFS_TGT \
@@ -672,6 +672,106 @@ make install >> /log 2>&1
 cd /sources
 rm -rf gcc-10.2.0
 echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
+
+### Gettext-0.21 ###
+
+echo -e "Installing Gettext..."
+tar xf /sources/gettext-0.21.tar.xz -C /sources/
+cd /sources/gettext-0.21
+./configure --disable-shared >> log 2>&1
+make >> /log 2>&1
+make install >> /log 2>&1
+cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
+cd /sources
+rm -rf gettext-0.21
+echo -e "Gettext installed [${GREEN}OK${WHITE}]"
+
+#### Bison-3.7.5 ###
+
+echo -e "Installing Bison..."
+tar xf /sources/bison-3.7.5.tar.xz -C /sources/
+cd /sources/bison-3.7.5
+./configure --prefix=/usr \
+--docdir=/usr/share/doc/bison-3.7.5 >> log 2>&1
+make >> /log 2>&1
+make install >> /log 2>&1
+cd /sources
+rm -rf bison-3.7.5
+echo -e "Bison installed [${GREEN}OK${WHITE}]"
+
+### Perl-5.32.1 ###
+
+echo -e "Installing Perl..."
+tar xf /sources/perl-5.32.1.tar.xz -C /sources/
+cd /sources/perl-5.32.1
+sh Configure -des \
+-Dprefix=/usr \
+-Dvendorprefix=/usr \
+-Dprivlib=/usr/lib/perl5/5.32/core_perl \
+-Darchlib=/usr/lib/perl5/5.32/core_perl \
+-Dsitelib=/usr/lib/perl5/5.32/site_perl \
+-Dsitearch=/usr/lib/perl5/5.32/site_perl \
+-Dvendorlib=/usr/lib/perl5/5.32/vendor_perl \
+-Dvendorarch=/usr/lib/perl5/5.32/vendor_perl >> log 2>&1
+make >> /log 2>&1
+make install >> /log 2>&1
+cd /sources
+rm -rf perl-5.32.1
+echo -e "Perl installed [${GREEN}OK${WHITE}]"
+
+### Python-3.9.2 ###
+
+echo -e "Installing Python..."
+tar xf /sources/Python-3.9.2 -C /sources/
+cd /sources/Python-3.9.2
+./configure --prefix=/usr \
+--enable-shared \
+--without-ensurepip >> /log 2>&1
+make >> /log 2>&1
+make install >> /log 2>&1
+cd /sources
+rm -rf Python-3.9.2
+echo -e "Python installed [${GREEN}OK${WHITE}]"
+
+### Texinfo-6.7 ###
+
+echo -e "Installing Texinfo..."
+tar xf /sources/texinfo-6.7.tar.xz -C /sources/
+cd /sources/texinfo-6.7
+./configure --prefix=/usr >> /log 2>&1
+make >> /log 2>&1
+make install >> /log 2>&1
+cd /sources
+rm -rf texinfo-6.7
+echo -e "Texinfo installed [${GREEN}OK${WHITE}]"
+
+
+### Util-linux-2.36.2 ###
+
+echo -e "Installing Util-Linux..."
+tar xf /sources/util-linux-2.36.2.tar.xz -C /sources/
+cd /sources/util-linux-2.36.2
+mkdir -pv /var/lib/hwclock
+./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
+--docdir=/usr/share/doc/util-linux-2.36.2 \
+--disable-chfn-chsh \
+--disable-login \
+--disable-nologin \
+--disable-su \
+--disable-setpriv \
+--disable-runuser \
+--disable-pylibmount \
+--disable-static \
+--without-python \
+runstatedir=/run >> /log 2>&1
+make >> /log 2>&1
+make install >> /log 2>&1
+cd /sources
+rm -rf util-linux-2.36.2
+echo -e "Util-Linux installed [${GREEN}OK${WHITE}]"
+
+find /usr/{lib,libexec} -name \*.la -delete
+rm -rf /usr/share/{info,man,doc}/*
 
 EOZ
 
