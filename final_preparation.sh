@@ -155,13 +155,13 @@ tar xf $LFS/sources/glibc-2.33.tar.xz -C $LFS/sources/
 cd $LFS/sources/glibc-2.33
 case $(uname -m) in
   i?86)
-    ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
+    ln -sf ld-linux.so.2 $LFS/lib/ld-lsb.so.3
   ;;
-  x86_64) ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64
-          ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
+  x86_64) ln -sf ../lib/ld-linux-x86-64.so.2 $LFS/lib64
+          ln -sf ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
   ;;
 esac
-patch -Np1 -i ../glibc-2.33-fhs-1.patch
+patch -Np1 -i ../glibc-2.33-fhs-1.patch >> $LOG 2>&1
 mkdir build
 cd build
 ../configure \
@@ -219,18 +219,18 @@ echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
 make >> $LOG 2>&1
 make DESTDIR=$LFS install >> $LOG 2>&1
 cd $LFS/sources
-rm -rf gcc-10.2.0
+rm -rf m4-1.4.18
 echo -e "M4 installed [${GREEN}OK${WHITE}]"
 
 #### Ncurses-6.2 ####
 
-echo -e "Installing M4..."
+echo -e "Installing Ncurses..."
 tar xf $LFS/sources/ncurses-6.2.tar.gz -C $LFS/sources/
 cd $LFS/sources/ncurses-6.2
-sed -i s/mawk// configure >> $LOG 2>&1
+sed -i s/mawk// configure
 mkdir build
 pushd build
-  ../configure
+  ../configure >> log.txt 2>&1
   make -C include >> log.txt 2>&1
   make -C progs tic >> log.txt 2>&1
 popd
@@ -265,7 +265,7 @@ cd $LFS/sources/bash-5.1
 make >> $LOG 2>&1
 make DESTDIR=$LFS install >> $LOG 2>&1
 mv $LFS/usr/bin/bash $LFS/bin/bash
-ln -sv bash $LFS/bin/sh
+ln -s bash $LFS/bin/sh
 cd $LFS/sources
 rm -rf $LFS/sources/bash-5.1
 echo -e "bash installed [${GREEN}OK${WHITE}]"
@@ -378,7 +378,7 @@ cd $LFS/sources/gzip-1.10
 ./configure --prefix=/usr --host=$LFS_TGT >> $LOG 2>&1
 make >> $LOG 2>&1
 make DESTDIR=$LFS install >> $LOG 2>&1
-mv -v $LFS/usr/bin/gzip $LFS/bin
+mv $LFS/usr/bin/gzip $LFS/bin
 cd $LFS/sources
 rm -rf $LFS/sources/gzip-1.10
 echo -e "Gzip installed [${GREEN}OK${WHITE}]"
@@ -469,7 +469,7 @@ mkdir build
 cd build
 ../configure \
 --prefix=/usr \
---build=$(../co0nfig.guess) \
+--build=$(../config.guess) \
 --host=$LFS_TGT \
 --disable-nls \
 --enable-shared \
@@ -520,14 +520,140 @@ CC_FOR_TARGET=$LFS_TGT-gcc \
 --disable-libvtv \
 --disable-libstdcxx \
 --enable-languages=c,c++ >> $LOG 2>&1
-make >> $LOG 2>&
-make DESTDIR=$LFS install >> $LOG 2>&
-ln -sv gcc $LFS/usr/bin/cc
+make >> $LOG 2>&1
+make DESTDIR=$LFS install >> $LOG 2>&1
+ln -s gcc $LFS/usr/bin/cc
 cd $LFS/sources
 rm -rf $LFS/sources/gcc-10.2.0
 echo -e "Gcc installed [${GREEN}OK${WHITE}]"
 
-
-
-
 EOZ
+
+#### Preparing the Virtual Kernel ####
+
+chown -R root:root $LFS/{usr,lib,lib64,var,etc,bin,sbin,tools}
+mkdir -p $LFS/{dev,proc,sys,run}
+
+mknod -m 600 $LFS/dev/console c 5 1
+mknod -m 666 $LFS/dev/null c 1 3
+
+mount --bind /dev $LFS/dev
+mount -t proc proc $LFS/proc
+mount -t sysfs sysfs $LFS/sys
+mount -t tmpfs tmpfs $LFS/run
+mount -v --bind /dev/pts $LFS/dev/pts
+
+#### Entering In the environment ####
+
+chroot "$LFS" /usr/bin/env -i \
+HOME=/root \
+TERM="$TERM" \
+PS1='(lfs chroot) \u:\w\$ ' \
+PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+/bin/bash --login +h
+
+mkdir -p /{boot,home,mnt,opt,srv}
+mkdir -p /etc/{opt,sysconfig}
+mkdir -p /lib/firmware
+mkdir -p /media/{floppy,cdrom}
+mkdir -p /usr/{,local/}{bin,include,lib,sbin,src}
+mkdir -p /usr/{,local/}share/{color,dict,doc,info,locale,man}
+mkdir -p /usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -p /usr/{,local/}share/man/man{1..8}
+mkdir -p /var/{cache,local,log,mail,opt,spool}
+mkdir -p /var/lib/{color,misc,locate}
+ln -sf /run /var/run
+ln -sf /run/lock /var/lock
+install -d -m 0750 /root
+install -d -m 1777 /tmp /var/tmp
+
+ln -s /proc/self/mounts /etc/mtab
+echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
+
+cat > /etc/passwd << "EOF"
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/dev/null:/bin/false
+daemon:x:6:6:Daemon User:/dev/null:/bin/false
+messagebus:x:18:18:D-Bus Message Daemon User:/run/dbus:/bin/false
+systemd-bus-proxy:x:72:72:systemd Bus Proxy:/:/bin/false
+systemd-journal-gateway:x:73:73:systemd Journal Gateway:/:/bin/false
+systemd-journal-remote:x:74:74:systemd Journal Remote:/:/bin/false
+systemd-journal-upload:x:75:75:systemd Journal Upload:/:/bin/false
+systemd-network:x:76:76:systemd Network Management:/:/bin/false
+systemd-resolve:x:77:77:systemd Resolver:/:/bin/false
+systemd-timesync:x:78:78:systemd Time Synchronization:/:/bin/false
+systemd-coredump:x:79:79:systemd Core Dumper:/:/bin/false
+uuidd:x:80:80:UUID Generation Daemon User:/dev/null:/bin/false
+nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
+EOF
+
+cat > /etc/group << "EOF"
+root:x:0:
+bin:x:1:daemon
+sys:x:2:
+kmem:x:3:
+tape:x:4:
+tty:x:5:
+daemon:x:6:
+floppy:x:7:
+disk:x:8:
+lp:x:9:
+dialout:x:10:
+audio:x:11:
+video:x:12:
+utmp:x:13:
+usb:x:14:
+cdrom:x:15:
+adm:x:16:
+messagebus:x:18:
+systemd-journal:x:23:
+input:x:24:
+mail:x:34:
+kvm:x:61:
+systemd-bus-proxy:x:72:
+systemd-journal-gateway:x:73:
+systemd-journal-remote:x:74:
+systemd-journal-upload:x:75:
+systemd-network:x:76:
+systemd-resolve:x:77:
+systemd-timesync:x:78:
+systemd-coredump:x:79:
+uuidd:x:80:
+wheel:x:97:
+nogroup:x:99:
+users:x:999:
+EOF
+
+echo "tester:x:101:101::/home/tester:/bin/bash" >> /etc/passwd
+echo "tester:x:101:" >> /etc/group
+install -o tester -d /home/tester
+exec /bin/bash --login +h
+touch /var/log/{btmp,lastlog,faillog,wtmp}
+chgrp -v utmp /var/log/lastlog
+chmod -v 664  /var/log/lastlog
+chmod -v 600  /var/log/btmp
+
+#### Libstdc++ from GCC-10.2.0 ####
+
+echo -e "Installing Libstdc++ from GCC-10.2.0..."
+tar xf /sources/gcc-10.2.0.tar.xz -C /sources/
+cd /sources/gcc-10.2.0
+mkdir -v build
+cd build
+../libstdc++-v3/configure \
+CXXFLAGS="-g -O2 -D_GNU_SOURCE" \
+--prefix=/usr \
+--disable-multilib \
+--disable-nls \
+--host=$(uname -m)-lfs-linux-gnu \
+--disable-libstdcxx-pch >> $LOG 2>&1
+make >> $LOG 2>&1
+make install >> $LOG 2>&1
+cd /sources
+rm -rf gcc-10.2.0
+echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
+
+
+
+
+
