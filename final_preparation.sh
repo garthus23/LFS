@@ -69,6 +69,9 @@ LOG=/mnt/lfs/sources/log.txt
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 export MAKEFLAGS='-j4'
 
+GREEN='\e[32m'
+RED='\e[31m'
+WHITE='\e[0m'
 
 cat > ~/.bash_profile << "EOF"
 exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
@@ -571,6 +574,10 @@ TERM="$TERM" \
 PS1='(lfs chroot) \u:\w\$ ' \
 PATH=/bin:/usr/bin:/sbin:/usr/sbin \
 /bin/bash --login +h << "EOZ"
+
+GREEN='\e[32m'
+RED='\e[31m'
+WHITE='\e[0m'
 
 mkdir -p /{boot,home,mnt,opt,srv}
 mkdir -p /etc/{opt,sysconfig}
