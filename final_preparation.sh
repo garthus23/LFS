@@ -66,7 +66,7 @@ TERM=xterm-256color
 LFS_TGT=x86_64-lfs-linux-gnu
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
-LOG=/mnt/lfs/sources/log.txt
+ERROR=/mnt/lfs/sources/error
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 export MAKEFLAGS='-j4'
 
@@ -103,9 +103,9 @@ cd $LFS/sources/binutils-2.36.1/build
 --target=$LFS_TGT \
 --disable-nls \
 --disable-werror \
---silent > $LOG 2>&1
-make --silent >> $LOG 2>&1
-make --silent install >> $LOG 2>&1
+--silent > /dev/null 2>> $ERROR
+make --silent > /dev/null 2>> $ERROR
+make --silent install > /dev/null 2>> $ERROR
 cd $LFS/sources
 rm -rf $LFS/sources/binutils-2.36.1
 echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
@@ -149,9 +149,9 @@ cd build
 --disable-libvtv \
 --disable-libstdcxx \
 --enable-languages=c,c++ \
---silent >> $LOG 2>&1
-make --silent >>  $LOG 2>&1
-make --silent install >> $LOG 2>&1
+--silent > /dev/null 2>> $ERROR
+make --silent > /dev/null 2>> $ERROR
+make --silent install > /dev/null 2>> $ERROR
 cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
 `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
@@ -164,8 +164,8 @@ echo -e "gcc-10.2.0 installed [${GREEN}OK${WHITE}]"
 echo -e "Installing Linux-5.10.17 Headers package..."
 tar xf $LFS/sources/linux-5.10.17.tar.xz -C $LFS/sources/
 cd $LFS/sources/linux-5.10.17
-make --silent mrproper >> log.txt 2>&1
-make --silent headers >> log.txt 2>&1
+make --silent mrproper > /dev/null 2>> $ERROR
+make --silent headers > /dev/null 2>> $ERROR
 find usr/include -name '.*' -delete
 rm usr/include/Makefile
 cp -r usr/include $LFS/usr
@@ -185,7 +185,7 @@ case $(uname -m) in
           ln -sf ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
   ;;
 esac
-patch -Np1 -i ../glibc-2.33-fhs-1.patch >> $LOG 2>&1
+patch -Np1 -i ../glibc-2.33-fhs-1.patch > /dev/null 2>> $ERROR
 mkdir build
 cd build
 ../configure \
@@ -195,9 +195,9 @@ cd build
 --enable-kernel=3.2 \
 --with-headers=$LFS/usr/include \
 --silent \
-libc_cv_slibdir=/lib >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+libc_cv_slibdir=/lib > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
 rm -rf glibc-2.33
 echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
@@ -219,9 +219,9 @@ cd build
 --disable-multilib \
 --disable-nls \
 --disable-libstdcxx-pch \
---with-gxx-include-dir=/tools/$LFS_TGT/include/c++/10.2.0 >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--with-gxx-include-dir=/tools/$LFS_TGT/include/c++/10.2.0 > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
 rm -rf gcc-10.2.0
 echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
@@ -239,9 +239,9 @@ sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
 echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
---build=$(build-aux/config.guess) >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
 rm -rf m4-1.4.18
 echo -e "M4 installed [${GREEN}OK${WHITE}]"
@@ -254,9 +254,9 @@ cd $LFS/sources/ncurses-6.2
 sed -i s/mawk// configure
 mkdir build
 pushd build
-  ../configure >> log.txt 2>&1
-  make -C include >> log.txt 2>&1
-  make -C progs tic >> log.txt 2>&1
+  ../configure > /dev/null 2>> $ERROR
+  make -C include > /dev/null 2>> $ERROR
+  make -C progs tic > /dev/null 2>> $ERROR
 popd
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
@@ -267,14 +267,14 @@ popd
 --without-debug \
 --without-ada \
 --without-normal \
---enable-widec >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install >> $LOG 2>&1
+--enable-widec > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install > /dev/null 2>> $ERROR
 echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
 mv $LFS/usr/lib/libncursesw.so.6* $LFS/lib
 ln -sf ../../lib/$(readlink $LFS/usr/lib/libncursesw.so) $LFS/usr/lib/libncursesw
 cd $LFS/sources
-rm -rf $LFS/sources/ncurses-6.2
+rm -rf "$LFS/sources/ncurses-6.2"
 echo -e "ncursed installed [${GREEN}OK${WHITE}]"
 
 #### bash-5.1 ####
@@ -285,13 +285,13 @@ cd $LFS/sources/bash-5.1
 ./configure --prefix=/usr \
 --build=$(support/config.guess) \
 --host=$LFS_TGT \
---without-bash-malloc >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--without-bash-malloc > /dev/null 2>> $ERROR
+make > /dev/null 2> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 mv $LFS/usr/bin/bash $LFS/bin/bash
 ln -s bash $LFS/bin/sh
 cd $LFS/sources
-rm -rf $LFS/sources/bash-5.1
+rm -rf "$LFS/sources/bash-5.1"
 echo -e "bash installed [${GREEN}OK${WHITE}]"
 
 #### Coreutils-8.32 ####
@@ -303,19 +303,19 @@ cd $LFS/sources/coreutils-8.32
 --host=$LFS_TGT \
 --build=$(build-aux/config.guess) \
 --enable-install-program=hostname \
---enable-no-install-program=kill,uptime >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
-mv $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
-mv $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
-mv $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
-mv $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
-mv $LFS/usr/bin/chroot $LFS/usr/sbin
+--enable-no-install-program=kill,uptime > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+mv -v$LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
+mv -v $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
+mv -v $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
+mv -v $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
+mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
 mkdir -p $LFS/usr/share/man/man8 
-mv $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
 sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
 cd $LFS/sources
-rm -rf $LFS/sources/coreutils-8.32
+rm -rf "$LFS/sources/coreutils-8.32"
 echo -e "coreutils installed [${GREEN}OK${WHITE}]"
 
 #### Diffutils-3.7 ####
@@ -323,11 +323,11 @@ echo -e "coreutils installed [${GREEN}OK${WHITE}]"
 echo -e "Installing diffutils..."
 tar xf $LFS/sources/diffutils-3.7.tar.xz -C $LFS/sources/
 cd $LFS/sources/diffutils-3.7
-./configure --prefix=/usr --host=$LFS_TGT >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+./configure --prefix=/usr --host=$LFS_TGT > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/diffutils-3.7
+rm -rf "$LFS/sources/diffutils-3.7"
 echo -e "diffutils installed [${GREEN}OK${WHITE}]"
 
 #### File-5.39 ####
@@ -340,14 +340,14 @@ pushd build
 ../configure --disable-bzlib \
 --disable-libseccomp \
 --disable-xzlib \
---disable-zlib >> log.txt 2>&1
-make >> log.txt 2>&1
+--disable-zlib > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
 popd
-./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess) >> $LOG 2>&1
-make FILE_COMPILE=$(pwd)/build/src/file >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess) > /dev/null 2>> $ERROR
+make FILE_COMPILE=$(pwd)/build/src/file > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/file-5.39
+rm -rf "$LFS/sources/file-5.39"
 echo -e "file installed [${GREEN}OK${WHITE}]"
 
 #### Findutils-4.8.0 ####
@@ -357,13 +357,13 @@ tar xf $LFS/sources/findutils-4.8.0.tar.xz -C $LFS/sources/
 cd $LFS/sources/findutils-4.8.0
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
---build=$(build-aux/config.guess) >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 mv $LFS/usr/bin/find $LFS/bin
 sed -i 's|find:=${BINDIR}|find:=/bin|' $LFS/usr/bin/updatedb
 cd $LFS/sources
-rm -rf $LFS/sources/findutils-4.8.0
+rm -rf "$LFS/sources/findutils-4.8.0"
 echo -e "findutils installed [${GREEN}OK${WHITE}]"
 
 #### Gawk-5.1.0 ####
@@ -373,11 +373,11 @@ tar xf $LFS/sources/gawk-5.1.0.tar.xz -C $LFS/sources/
 cd $LFS/sources/gawk-5.1.0
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
---build=$(./config.guess) >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--build=$(./config.guess) > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/gawk-5.1.0
+rm -rf "$LFS/sources/gawk-5.1.0"
 echo -e "gawk installled [${GREEN}OK${WHITE}]"
 
 #### Grep-3.6 ####
@@ -387,11 +387,11 @@ tar xf $LFS/sources/grep-3.6.tar.xz -C $LFS/sources/
 cd $LFS/sources/grep-3.6
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
---bindir=/bin >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--bindir=/bin > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/grep-3.6
+rm -rf "$LFS/sources/grep-3.6"
 echo -e "Grep installled [${GREEN}OK${WHITE}]"
 
 #### Gzip-1.10 ####
@@ -399,12 +399,12 @@ echo -e "Grep installled [${GREEN}OK${WHITE}]"
 echo -e "Installing Gzip..."
 tar xf $LFS/sources/gzip-1.10.tar.xz -C $LFS/sources/
 cd $LFS/sources/gzip-1.10
-./configure --prefix=/usr --host=$LFS_TGT >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+./configure --prefix=/usr --host=$LFS_TGT > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 mv $LFS/usr/bin/gzip $LFS/bin
 cd $LFS/sources
-rm -rf $LFS/sources/gzip-1.10
+rm -rf "$LFS/sources/gzip-1.10"
 echo -e "Gzip installed [${GREEN}OK${WHITE}]"
 
 #### Make-4.3 ####
@@ -415,11 +415,11 @@ cd $LFS/sources/make-4.3
 ./configure --prefix=/usr \
 --without-guile \
 --host=$LFS_TGT \
---build=$(build-aux/config.guess) >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/make-4.3
+rm -rf "$LFS/sources/make-4.3"
 echo -e "Make installed [${GREEN}OK${WHITE}]"
 
 #### Patch-2.7.6 ####
@@ -429,11 +429,11 @@ tar xf $LFS/sources/patch-2.7.6.tar.xz -C $LFS/sources/
 cd $LFS/sources/patch-2.7.6
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
---build=$(build-aux/config.guess) >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/patch-2.7.6
+rm -rf "$LFS/sources/patch-2.7.6"
 echo -e "Patch installed [${GREEN}OK${WHITE}]"
 
 #### Sed-4.8 ####
@@ -443,11 +443,11 @@ tar xf $LFS/sources/sed-4.8.tar.xz -C $LFS/sources/
 cd $LFS/sources/sed-4.8
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
---bindir=/bin >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--bindir=/bin > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/sed-4.8
+rm -rf "$LFS/sources/sed-4.8"
 echo -e "Sed installed [${GREEN}OK${WHITE}]"
 
 #### Tar-1.34 ####
@@ -458,11 +458,11 @@ cd $LFS/sources/tar-1.34
 ./configure --prefix=/usr \
 --host=$LFS_TGT \
 --build=$(build-aux/config.guess) \
---bindir=/bin >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--bindir=/bin > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 cd $LFS/sources
-rm -rf $LFS/sources/tar-1.34
+rm -rf "$LFS/sources/tar-1.34"
 echo -e "Tar installed [${GREEN}OK${WHITE}]"
 
 #### Xz-5.2.5 ####
@@ -474,14 +474,14 @@ cd $LFS/sources/xz-5.2.5
 --host=$LFS_TGT \
 --build=$(build-aux/config.guess) \
 --disable-static \
---docdir=/usr/share/doc/xz-5.2.5 >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--docdir=/usr/share/doc/xz-5.2.5 > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 mv $LFS/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $LFS/bin
 mv $LFS/usr/lib/liblzma.so.* $LFS/lib
 ln -sf ../../lib/$(readlink $LFS/usr/lib/liblzma.so) $LFS/usr/lib/liblzma.so
 cd $LFS/sources
-rm -rf $LFS/sources/xz-5.2.5
+rm -rf "$LFS/sources/xz-5.2.5"
 echo -e "Xz installed [${GREEN}OK${WHITE}]"
 
 #### Binutils-2.36.1 ####
@@ -498,12 +498,12 @@ cd build
 --disable-nls \
 --enable-shared \
 --disable-werror \
---enable-64-bit-bfd >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--enable-64-bit-bfd > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib
 cd $LFS/sources
-rm -rf $LFS/sources/binutils-2.36.1
+rm -rf "$LFS/sources/binutils-2.36.1"
 echo -e "Binutils installed [${GREEN}OK${WHITE}]"
 
 
@@ -543,12 +543,12 @@ CC_FOR_TARGET=$LFS_TGT-gcc \
 --disable-libssp \
 --disable-libvtv \
 --disable-libstdcxx \
---enable-languages=c,c++ >> $LOG 2>&1
-make >> $LOG 2>&1
-make DESTDIR=$LFS install >> $LOG 2>&1
+--enable-languages=c,c++ > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 ln -sv gcc $LFS/usr/bin/cc
 cd $LFS/sources
-rm -rf $LFS/sources/gcc-10.2.0
+rm -rf "$LFS/sources/gcc-10.2.0"
 echo -e "Gcc installed [${GREEN}OK${WHITE}]"
 
 EOZ
@@ -665,7 +665,7 @@ chmod -v 600  /var/log/btmp
 echo -e "Installing Libstdc++ from GCC-10.2.0..."
 tar xf /sources/gcc-10.2.0.tar.xz -C /sources/
 cd /sources/gcc-10.2.0
-mkdir -v build
+mkdir build
 cd build
 ../libstdc++-v3/configure \
 CXXFLAGS="-g -O2 -D_GNU_SOURCE" \
@@ -673,9 +673,9 @@ CXXFLAGS="-g -O2 -D_GNU_SOURCE" \
 --disable-multilib \
 --disable-nls \
 --host=$(uname -m)-lfs-linux-gnu \
---disable-libstdcxx-pch >> /log 2>&1
-make >> /log 2>&1
-make install >> /log 2>&1
+--disable-libstdcxx-pch > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make install > /dev/null 2>> $ERROR
 cd /sources
 rm -rf gcc-10.2.0
 echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
@@ -685,123 +685,122 @@ echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
 echo -e "Installing Gettext..."
 tar xf /sources/gettext-0.21.tar.xz -C /sources/
 cd /sources/gettext-0.21
-./configure --disable-shared >> log 2>&1
-make >> /log 2>&1
-cp gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
+./configure --disable-shared > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
 cd /sources
 rm -rf gettext-0.21
 echo -e "Gettext installed [${GREEN}OK${WHITE}]"
-
-#### Bison-3.7.5 ###
-
-echo -e "Installing Bison..."
-tar xf /sources/bison-3.7.5.tar.xz -C /sources/
-cd /sources/bison-3.7.5
-./configure --prefix=/usr \
---docdir=/usr/share/doc/bison-3.7.5 >> log 2>&1
-make >> /log 2>&1
-make install >> /log 2>&1
-cd /sources
-rm -rf bison-3.7.5
-echo -e "Bison installed [${GREEN}OK${WHITE}]"
-
-### Perl-5.32.1 ###
-
-echo -e "Installing Perl..."
-tar xf /sources/perl-5.32.1.tar.xz -C /sources/
-cd /sources/perl-5.32.1
-sh Configure -des \
--Dprefix=/usr \
--Dvendorprefix=/usr \
--Dprivlib=/usr/lib/perl5/5.32/core_perl \
--Darchlib=/usr/lib/perl5/5.32/core_perl \
--Dsitelib=/usr/lib/perl5/5.32/site_perl \
--Dsitearch=/usr/lib/perl5/5.32/site_perl \
--Dvendorlib=/usr/lib/perl5/5.32/vendor_perl \
--Dvendorarch=/usr/lib/perl5/5.32/vendor_perl >> log 2>&1
-make >> /log 2>&1
-make install >> /log 2>&1
-cd /sources
-rm -rf perl-5.32.1
-echo -e "Perl installed [${GREEN}OK${WHITE}]"
-
-### Python-3.9.2 ###
-
-echo -e "Installing Python..."
-tar xf /sources/Python-3.9.2.tar.xz -C /sources/
-cd /sources/Python-3.9.2
-./configure --prefix=/usr \
---enable-shared \
---without-ensurepip >> /log 2>&1
-make >> /log 2>&1
-make install >> /log 2>&1
-cd /sources
-rm -rf Python-3.9.2
-echo -e "Python installed [${GREEN}OK${WHITE}]"
-
-### Texinfo-6.7 ###
-
-echo -e "Installing Texinfo..."
-tar xf /sources/texinfo-6.7.tar.xz -C /sources/
-cd /sources/texinfo-6.7
-./configure --prefix=/usr >> /log 2>&1
-make >> /log 2>&1
-make install >> /log 2>&1
-cd /sources
-rm -rf texinfo-6.7
-echo -e "Texinfo installed [${GREEN}OK${WHITE}]"
-
-
-### Util-linux-2.36.2 ###
-
-echo -e "Installing Util-Linux..."
-tar xf /sources/util-linux-2.36.2.tar.xz -C /sources/
-cd /sources/util-linux-2.36.2
-mkdir -pv /var/lib/hwclock
-./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
---docdir=/usr/share/doc/util-linux-2.36.2 \
---disable-chfn-chsh \
---disable-login \
---disable-nologin \
---disable-su \
---disable-setpriv \
---disable-runuser \
---disable-pylibmount \
---disable-static \
---without-python \
-runstatedir=/run >> /log 2>&1
-make >> /log 2>&1
-make install >> /log 2>&1
-cd /sources
-rm -rf util-linux-2.36.2
-echo -e "Util-Linux installed [${GREEN}OK${WHITE}]"
-
-find /usr/{lib,libexec} -name \*.la -delete
-rm -rf /usr/share/{info,man,doc}/*
-
+#
+##### Bison-3.7.5 ###
+#
+#echo -e "Installing Bison..."
+#tar xf /sources/bison-3.7.5.tar.xz -C /sources/
+#cd /sources/bison-3.7.5
+#./configure --prefix=/usr \
+#--docdir=/usr/share/doc/bison-3.7.5 >> /log 2>&1
+#make >> /log 2>&1
+#make install >> /log 2>&1
+#cd /sources
+#rm -rf bison-3.7.5
+#echo -e "Bison installed [${GREEN}OK${WHITE}]"
+#
+#### Perl-5.32.1 ###
+#
+#echo -e "Installing Perl..."
+#tar xf /sources/perl-5.32.1.tar.xz -C /sources/
+#cd /sources/perl-5.32.1
+#sh Configure -des \
+#-Dprefix=/usr \
+#-Dvendorprefix=/usr \
+#-Dprivlib=/usr/lib/perl5/5.32/core_perl \
+#-Darchlib=/usr/lib/perl5/5.32/core_perl \
+#-Dsitelib=/usr/lib/perl5/5.32/site_perl \
+#-Dsitearch=/usr/lib/perl5/5.32/site_perl \
+#-Dvendorlib=/usr/lib/perl5/5.32/vendor_perl \
+#-Dvendorarch=/usr/lib/perl5/5.32/vendor_perl >> log 2>&1
+#make >> /log 2>&1
+#make install >> /log 2>&1
+#cd /sources
+#rm -rf perl-5.32.1
+#echo -e "Perl installed [${GREEN}OK${WHITE}]"
+#
+#### Python-3.9.2 ###
+#
+#echo -e "Installing Python..."
+#tar xf /sources/Python-3.9.2.tar.xz -C /sources/
+#cd /sources/Python-3.9.2
+#./configure --prefix=/usr \
+#--enable-shared \
+#--without-ensurepip >> /log 2>&1
+#make >> /log 2>&1
+#make install >> /log 2>&1
+#cd /sources
+#rm -rf Python-3.9.2
+#echo -e "Python installed [${GREEN}OK${WHITE}]"
+#
+#### Texinfo-6.7 ###
+#
+#echo -e "Installing Texinfo..."
+#tar xf /sources/texinfo-6.7.tar.xz -C /sources/
+#cd /sources/texinfo-6.7
+#./configure --prefix=/usr >> /log 2>&1
+#make >> /log 2>&1
+#make install >> /log 2>&1
+#cd /sources
+#rm -rf texinfo-6.7
+#echo -e "Texinfo installed [${GREEN}OK${WHITE}]"
+#
+#
+#### Util-linux-2.36.2 ###
+#
+#echo -e "Installing Util-Linux..."
+#tar xf /sources/util-linux-2.36.2.tar.xz -C /sources/
+#cd /sources/util-linux-2.36.2
+#mkdir -pv /var/lib/hwclock
+#./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
+#--docdir=/usr/share/doc/util-linux-2.36.2 \
+#--disable-chfn-chsh \
+#--disable-login \
+#--disable-nologin \
+#--disable-su \
+#--disable-setpriv \
+#--disable-runuser \
+#--disable-pylibmount \
+#--disable-static \
+#--without-python \
+#runstatedir=/run >> /log 2>&1
+#make >> /log 2>&1
+#make install >> /log 2>&1
+#cd /sources
+#rm -rf util-linux-2.36.2
+#echo -e "Util-Linux installed [${GREEN}OK${WHITE}]"
+#
+#find /usr/{lib,libexec} -name \*.la -delete
+#rm -rf /usr/share/{info,man,doc}/*
+#
 EOZ
-
-
-#### cleaning and backup CrossToolchain and Temporary Tools ####
-
-umount $LFS/run
-umount $LFS/proc
-umount $LFS/sys
-umount $LFS/dev/pts
-wait $!
-umount $LFS/dev
-
-strip --strip-debug $LFS/usr/lib/* >> $LOG 2>&1
-strip --strip-unneeded $LFS/usr/{,s}bin/* >> $LOG 2>&1
-strip --strip-unneeded $LFS/tools/bin/* >> $LOG 2>&1
-
-
+#
+#
+##### cleaning and backup CrossToolchain and Temporary Tools ####
+#
+#umount $LFS/run
+#umount $LFS/proc
+#umount $LFS/sys
+#umount $LFS/dev/pts
+#wait $!
+#umount $LFS/dev
+#
+#strip --strip-debug $LFS/usr/lib/* >> $LOG 2>&1
+#strip --strip-unneeded $LFS/usr/{,s}bin/* >> $LOG 2>&1
+#strip --strip-unneeded $LFS/tools/bin/* >> $LOG 2>&1
+#
+#
 # Backup
 # cd $LFS && tar -cJpf $HOME/lfs-temp-tools-10.1-systemd.tar.xz .
 
 # Restore
 #
 # cd $LFS &&
-# rm -rf ./* &&
-# tar -xpf $HOME/lfs-temp-tools-10.1-systemd.tar.xz
+# rm -rf ./* && tar -xpf $HOME/lfs-temp-tools-10.1-systemd.tar.xz
 
