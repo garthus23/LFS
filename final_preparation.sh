@@ -50,7 +50,7 @@ WHITE='\e[0m'
 #mkdir -p $LFS/{bin,etc,lib,lib64,sbin,usr,var}
 #mkdir -p $LFS/tools  # cross compiler directory
 
-### create unprivileged user ####
+## create unprivileged user ####
 #groupadd lfs
 #useradd -s /bin/bash -g lfs -m -k /dev/null lfs
 #chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
@@ -93,31 +93,30 @@ EOF
 
 
 #### Binutils-2.36.1 package ####
-echo "#### Binutils-2.36.1 package ####" >> $ERROR
-echo -e "Installing Binutils-2.36.1 package..."
-tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
-mkdir $LFS/sources/binutils-2.36.1/build
-cd $LFS/sources/binutils-2.36.1/build
-../configure --prefix=$LFS/tools \
---with-sysroot=$LFS \
---target=$LFS_TGT \
---disable-nls \
---disable-werror \
---silent > /dev/null 2>> $ERROR
-make > /dev/null 2>> $ERROR
-make install > /dev/null 2>> $ERROR
-if [[ -f $LFS/tools/bin/x86_64-lfs-linux-gnu-ar ]]
-then
-	echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
-else
-	echo -e "Binutils-2.36.1 not installed [${RED}FAILED${WHITE}]"
-	exit 2
-fi	
-cd $LFS/sources
-rm -rf $LFS/sources/binutils-2.36.1
+#echo "#### Binutils-2.36.1 package ####" >> $ERROR
+#echo -e "Installing Binutils-2.36.1 package..."
+#tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
+#mkdir $LFS/sources/binutils-2.36.1/build
+#cd $LFS/sources/binutils-2.36.1/build
+#../configure --prefix=$LFS/tools \
+#--with-sysroot=$LFS \
+#--target=$LFS_TGT \
+#--disable-nls \
+#--disable-werror > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/tools/x86_64-lfs-linux-gnu/bin/as ]]
+#then
+#	echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Binutils-2.36.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi	
+#cd $LFS/sources
+#rm -rf $LFS/sources/binutils-2.36.1
 
 #### GCC-10.2.0 package ###
-# echo -e "#### GCC-10.2.0 package ####" >> $ERROR
+#echo -e "#### GCC-10.2.0 package ####" >> $ERROR
 #echo -e "Installing GCC-10.2.0 package..."
 #tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
 #cd $LFS/sources/gcc-10.2.0
@@ -127,12 +126,7 @@ rm -rf $LFS/sources/binutils-2.36.1
 #mv gmp-6.2.1 gmp
 #tar -xf ../mpc-1.2.1.tar.gz
 #mv mpc-1.2.1 mpc
-#case $(uname -m) in
-#  x86_64)
-#    sed -e '/m64=/s/lib64/lib/' \
-#      -i.orig gcc/config/i386/t-linux64
-#  ;;
-#esac
+#sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
 #mkdir build
 #cd build
 #../configure \
@@ -154,44 +148,49 @@ rm -rf $LFS/sources/binutils-2.36.1
 #--disable-libssp \
 #--disable-libvtv \
 #--disable-libstdcxx \
-#--enable-languages=c,c++ \
-#--silent > /dev/null 2>> $ERROR
+#--enable-languages=c,c++ > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #cd ..
 #cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
-#`dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h
-#echo -e "gcc-10.2.0 installed [${GREEN}OK${WHITE}]"
-#
+#$LFS/tools/lib/gcc/x86_64-lfs-linux-gnu/10.2.0/install-tools/include/limits.h
+#if [[ -d $LFS/tools/lib/gcc ]]
+#then
+#	echo -e "gcc-10.2.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "gcc-10.2.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf gcc-10.2.0
 
 #### Linux-5.10.17 API Headers ###
-#
+#echo -e "#### Linux-5.10.17 package ####" >> $ERROR
 #echo -e "Installing Linux-5.10.17 Headers package..."
 #tar xf $LFS/sources/linux-5.10.17.tar.xz -C $LFS/sources/
 #cd $LFS/sources/linux-5.10.17
-#make --silent mrproper > /dev/null 2>> $ERROR
-#make --silent headers > /dev/null 2>> $ERROR
+#make mrproper > /dev/null 2>> $ERROR
+#make headers > /dev/null 2>> $ERROR
 #find usr/include -name '.*' -delete
 #rm usr/include/Makefile
 #cp -r usr/include $LFS/usr
+#if [[ -d $LFS/usr/include ]]
+#then
+#	echo -e "Linux-5.10.17 Headers installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Linux-5.10.17 Headers not installed [${RED}FAILED${WHITE}]"
+#fi
 #cd $LFS/sources
 #rm -rf linux-5.10.17
-#echo -e "Linux-5.10.17 Headers installed [${GREEN}OK${WHITE}]"
-#
-##### Glibc-2.33 ###
+
+
+##### Glibc-2.33 ####
+#echo -e "##### Glibc-2.33 ####" >> $ERROR
 #echo -e "Installing Glibc-2.33 package..."
 #tar xf $LFS/sources/glibc-2.33.tar.xz -C $LFS/sources/
 #cd $LFS/sources/glibc-2.33
-#case $(uname -m) in
-#  i?86)
-#    ln -sf ld-linux.so.2 $LFS/lib/ld-lsb.so.3
-#  ;;
-#  x86_64) ln -sf ../lib/ld-linux-x86-64.so.2 $LFS/lib64
-#          ln -sf ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
-#  ;;
-#esac
+#ln -sf ../lib/ld-linux-x86-64.so.2 $LFS/lib64
+#ln -sf ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
 #patch -Np1 -i ../glibc-2.33-fhs-1.patch > /dev/null 2>> $ERROR
 #mkdir build
 #cd build
@@ -201,19 +200,25 @@ rm -rf $LFS/sources/binutils-2.36.1
 #--build=$(../scripts/config.guess) \
 #--enable-kernel=3.2 \
 #--with-headers=$LFS/usr/include \
-#--silent \
 #libc_cv_slibdir=/lib > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-#cd $LFS/sources
-#rm -rf glibc-2.33
-#echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
+#if [[ -f $LFS/usr/bin/ldd ]]
+#then
+#	echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Glibc-2.33 not installed [${RED}FAILED${WHITE}]"
+#fi
 #
 #$LFS/tools/libexec/gcc/$LFS_TGT/10.2.0/install-tools/mkheaders
+#cd $LFS/sources
+#rm -rf glibc-2.33
+
+
 #
 #
 ##### Libstdc++ from GCC-10.2.0 ####
-#
+#echo -e "##### Libstdc++ from GCC-10.2.0 ####" >> $ERROR
 #echo -e "Installing Libstdc++ from GCC-10.2.0..."
 #tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
 #cd $LFS/sources/gcc-10.2.0
@@ -229,9 +234,14 @@ rm -rf $LFS/sources/binutils-2.36.1
 #--with-gxx-include-dir=/tools/$LFS_TGT/include/c++/10.2.0 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+if [[ -d /mnt/lfs/tools/x86_64-lfs-linux-gnu/include/c++ ]]
+then
+	echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
+else
+	echo -e "Libstdc++ not installed [${RED}FAILED${WHITE}]"
+fi
 #cd $LFS/sources
 #rm -rf gcc-10.2.0
-#echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
 #
 #
 ############################ Cross Compiling Temporary Tools ##############################
