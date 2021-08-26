@@ -76,7 +76,6 @@ cp ../nscd/nscd.conf /etc/nscd.conf
 mkdir -p /var/cache/nscd
 install -v -Dm644 ../nscd/nscd.tmpfiles /usr/lib/tmpfiles.d/nscd.conf
 install -v -Dm644 ../nscd/nscd.service /lib/systemd/system/nscd.service
-
 mkdir -p /usr/lib/locale
 localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
 localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
@@ -104,9 +103,7 @@ localedef -i ru_RU -f UTF-8 ru_RU.UTF-8
 localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
 localedef -i zh_CN -f GB18030 zh_CN.GB18030
 localedef -i zh_HK -f BIG5-HKSCS zh_HK.BIG5-HKSCS
-
 make localedata/install-locales >> /log 2>&1
-
 cat > /etc/nsswitch.conf << "EOF"
 # Begin /etc/nsswitch.conf
 passwd: files
@@ -120,7 +117,6 @@ ethers: files
 rpc: files
 # End /etc/nsswitch.conf
 EOF
-
 tar -xf ../../tzdata2021a.tar.gz
 ZONEINFO=/usr/share/zoneinfo
 mkdir -pv $ZONEINFO/{posix,right}
@@ -133,15 +129,103 @@ done
 cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
 zic -d $ZONEINFO -p Europe/Paris
 unset ZONEINFO
-
 ln -sfv /usr/share/zoneinfo/Europe/Paris /etc/localtime
-
-
 cat > /etc/ld.so.conf << "EOF"
 # Begin /etc/ld.so.conf
 /usr/local/lib
 /opt/lib
 EOF
+cd /sources
+rm -rf glibc-2.33
+echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
+
+
+### Zlib-1.2.11 ###
+
+echo -e "Installing Zlib-1.2.11..."
+tar -xf /sources/zlib-1.2.11.tar.xz -C /sources
+cd /sources/zlib-1.2.11
+./configure --prefix=/usr >> /log 2>&1
+make >> /log 2>&1
+make check >> /log 2>&1
+make install >> /log 2>&1
+mv -v /usr/lib/libz.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
+rm -fv /usr/lib/libz.a
+cd /sources
+rm -rf zlib-1.2.11
+echo -e "Zlib-1.2.11 installed [${GREEN}OK${WHITE}]"
+
+### Bzip2-1.0.8 ###
+
+echo -e "Installing Bzip2-1.0.8..."
+tar -xf /sources/bzip2-1.0.8.tar.gz -C /sources
+cd /sources/bzip2-1.0.8
+patch -Np1 -i ../bzip2-1.0.8-install_docs-1.patch
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+make -f Makefile-libbz2_so >> /log 2>&1
+make clean >> /log 2>&1
+make >> /log 2>&1
+make PREFIX=/usr install >> /log 2>&1
+cp -v bzip2-shared /bin/bzip2
+cp -av libbz2.so* /lib
+ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
+rm -v /usr/bin/{bunzip2,bzcat,bzip2}
+ln -sv bzip2 /bin/bunzip2
+ln -sv bzip2 /bin/bzcat
+rm -fv /usr/lib/libbz2.a
+cd /sources
+rm -rf bzip2-1.0.8
+echo -e "Bzip2-1.0.8 installed [${GREEN}OK${WHITE}]"
+
+### Xz-5.2.5 ###
+
+echo -e "Installing Xz-5.2.5..."
+tar -xf /sources/xz-5.2.5.tar.xz -C /sources
+cd /sources/xz-5.2.5
+./configure --prefix=/usr \
+--disable-static \
+--docdir=/usr/share/doc/xz-5.2.5 >> /log 2>&1
+make >> /log 2>&1
+make check >> /log 2>&1
+make install >> /log 2>&1
+mv -v /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
+mv -v /usr/lib/liblzma.so.* /lib
+ln -svf ../../lib/$(readlink /usr/lib/liblzma.so) /usr/lib/liblzma.so
+cd /sources
+rm -rf xz-5.2.5
+echo -e "Xz-5.2.5 installed [${GREEN}OK${WHITE}]"
+
+### Zstd-1.4.8 ###
+
+echo -e "Installing Zstd-1.4.8..."
+tar -xf /sources/zstd-1.4.8.tar.gz -C /sources
+cd /sources/zstd-1.4.8
+make >> /log 2>&1
+make check >> /log 2>&1
+make prefix=/usr install >> /log 2>&1
+rm -v /usr/lib/libzstd.a
+mv -v /usr/lib/libzstd.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libzstd.so) /usr/lib/libzstd.so
+cd /sources
+rm -rf zstd-1.4.8
+echo -e "Zstd-1.4.8 installed [${GREEN}OK${WHITE}]"
+
+### File-5.39 ###
+
+echo -e "Installing File-5.39..."
+tar -xf /sources/file-5.39.tar.gz -C /sources
+cd /sources/file-5.39
+./configure --prefix=/usr >> /log 2>&1
+make >> /log 2>&1
+make check >> /log 2>&1
+make install >> /log 2>&1
+cd /sources
+rm -rf file-5.39
+echo -e "file-5.39 installed [${GREEN}OK${WHITE}]"
+
+
 
 
 EOT
