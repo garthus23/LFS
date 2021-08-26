@@ -565,20 +565,19 @@ mount --bind /dev $LFS/dev
 mount -t proc proc $LFS/proc
 mount -t sysfs sysfs $LFS/sys
 mount -t tmpfs tmpfs $LFS/run
-mount -v --bind /dev/pts $LFS/dev/pts
+mount --bind /dev/pts $LFS/dev/pts
 
 #### Entering In the environment ####
 
 chroot "$LFS" /usr/bin/env -i \
 HOME=/root \
+GREEN='\e[32m' \
+RED='\e[31m' \
+WHITE='\e[0m' \
 TERM="$TERM" \
 PS1='(lfs chroot) \u:\w\$ ' \
 PATH=/bin:/usr/bin:/sbin:/usr/sbin \
 /bin/bash --login +h << "EOZ"
-
-GREEN='\e[32m'
-RED='\e[31m'
-WHITE='\e[0m'
 
 mkdir -p /{boot,home,mnt,opt,srv}
 mkdir -p /etc/{opt,sysconfig}
