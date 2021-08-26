@@ -320,7 +320,7 @@ echo -e "coreutils installed [${GREEN}OK${WHITE}]"
 
 #### Diffutils-3.7 ####
 
-echo -e "Installing Coreutils..."
+echo -e "Installing diffutils..."
 tar xf $LFS/sources/diffutils-3.7.tar.xz -C $LFS/sources/
 cd $LFS/sources/diffutils-3.7
 ./configure --prefix=/usr --host=$LFS_TGT >> $LOG 2>&1
@@ -352,7 +352,7 @@ echo -e "file installed [${GREEN}OK${WHITE}]"
 
 #### Findutils-4.8.0 ####
 
-echo -e "Installing File..."
+echo -e "Installing Findutils..."
 tar xf $LFS/sources/findutils-4.8.0.tar.xz -C $LFS/sources/
 cd $LFS/sources/findutils-4.8.0
 ./configure --prefix=/usr \
@@ -526,7 +526,7 @@ esac
 mkdir build
 cd build
 mkdir -p $LFS_TGT/libgcc
-ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
+ln -sv ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
 ../configure \
 --build=$(../config.guess) \
 --host=$LFS_TGT \
@@ -546,7 +546,7 @@ CC_FOR_TARGET=$LFS_TGT-gcc \
 --enable-languages=c,c++ >> $LOG 2>&1
 make >> $LOG 2>&1
 make DESTDIR=$LFS install >> $LOG 2>&1
-ln -s gcc $LFS/usr/bin/cc
+ln -sv gcc $LFS/usr/bin/cc
 cd $LFS/sources
 rm -rf $LFS/sources/gcc-10.2.0
 echo -e "Gcc installed [${GREEN}OK${WHITE}]"
@@ -589,12 +589,12 @@ mkdir -p /usr/{,local/}share/{misc,terminfo,zoneinfo}
 mkdir -p /usr/{,local/}share/man/man{1..8}
 mkdir -p /var/{cache,local,log,mail,opt,spool}
 mkdir -p /var/lib/{color,misc,locate}
-ln -sf /run /var/run
-ln -sf /run/lock /var/lock
+ln -svf /run /var/run
+ln -svf /run/lock /var/lock
 install -d -m 0750 /root
 install -d -m 1777 /tmp /var/tmp
 
-ln -s /proc/self/mounts /etc/mtab
+ln -sv /proc/self/mounts /etc/mtab
 echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
 
 cat > /etc/passwd << "EOF"
@@ -687,8 +687,7 @@ tar xf /sources/gettext-0.21.tar.xz -C /sources/
 cd /sources/gettext-0.21
 ./configure --disable-shared >> log 2>&1
 make >> /log 2>&1
-make install >> /log 2>&1
-cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
+cp gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
 cd /sources
 rm -rf gettext-0.21
 echo -e "Gettext installed [${GREEN}OK${WHITE}]"
@@ -789,13 +788,16 @@ umount $LFS/run
 umount $LFS/proc
 umount $LFS/sys
 umount $LFS/dev/pts
+wait $!
 umount $LFS/dev
 
-strip --strip-debug $LFS/usr/lib/*
-strip --strip-unneeded $LFS/usr/{,s}bin/*
-strip --strip-unneeded $LFS/tools/bin/*
+strip --strip-debug $LFS/usr/lib/* >> $LOG 2>&1
+strip --strip-unneeded $LFS/usr/{,s}bin/* >> $LOG 2>&1
+strip --strip-unneeded $LFS/tools/bin/* >> $LOG 2>&1
 
-cd $LFS && tar -cJpf $HOME/lfs-temp-tools-10.1-systemd.tar.xz .
+
+# Backup
+# cd $LFS && tar -cJpf $HOME/lfs-temp-tools-10.1-systemd.tar.xz .
 
 # Restore
 #
