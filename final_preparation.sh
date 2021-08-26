@@ -11,7 +11,7 @@ WHITE='\e[0m'
 #### disk verification ####
 #if [[ $(mount | grep -c "/mnt/lfs") == 0 ]]
 #then
-#	echo -e "${RED}Error ${WHITE}: The lfs Root directory is not mounted on any partition"
+#	echo -e "${RED}Error ${WHITE}: The lfs Root partition is not mounted on any directory"
 #	exit 1
 #fi
 #echo -e "Disk partitions and filesystem [${GREEN}OK${WHITE}]"
