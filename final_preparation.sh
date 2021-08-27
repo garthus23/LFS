@@ -57,39 +57,39 @@ WHITE='\e[0m'
 
 ############## Building the Cross Compiler #################
 
-sudo -u lfs bash << "EOZ" 
-
-LC_ALL=POSIX
-LFS=/mnt/lfs
-HOME=/home/lfs
-TERM=xterm-256color
-LFS_TGT=x86_64-lfs-linux-gnu
-PATH=$LFS/tools/bin:/bin:/usr/bin
-CONFIG_SITE=$LFS/usr/share/config.site
-ERROR=/mnt/lfs/sources/error
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-export MAKEFLAGS='-j4'
-
-GREEN='\e[32m'
-RED='\e[31m'
-WHITE='\e[0m'
-
-cat > ~/.bash_profile << "EOF"
-exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
-EOF
-
-cat > ~/.bashrc << "EOF"
-set +h
-umask 022
-LFS=/mnt/lfs
-LC_ALL=POSIX
-LFS_TGT=$(uname -m)-lfs-linux-gnu
-PATH=/usr/bin
-if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
-PATH=$LFS/tools/bin:$PATH
-CONFIG_SITE=$LFS/usr/share/config.site
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-EOF
+#sudo -u lfs bash << "EOZ" 
+#
+#LC_ALL=POSIX
+#LFS=/mnt/lfs
+#HOME=/home/lfs
+#TERM=xterm-256color
+#LFS_TGT=x86_64-lfs-linux-gnu
+#PATH=$LFS/tools/bin:/bin:/usr/bin
+#CONFIG_SITE=$LFS/usr/share/config.site
+#ERROR=/mnt/lfs/sources/error
+#export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+#export MAKEFLAGS='-j4'
+#
+#GREEN='\e[32m'
+#RED='\e[31m'
+#WHITE='\e[0m'
+#
+#cat > ~/.bash_profile << "EOF"
+#exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+#EOF
+#
+#cat > ~/.bashrc << "EOF"
+#set +h
+#umask 022
+#LFS=/mnt/lfs
+#LC_ALL=POSIX
+#LFS_TGT=$(uname -m)-lfs-linux-gnu
+#PATH=/usr/bin
+#if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
+#PATH=$LFS/tools/bin:$PATH
+#CONFIG_SITE=$LFS/usr/share/config.site
+#export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+#EOF
 
 #
 #### Binutils-2.36.1 package ####
@@ -685,12 +685,12 @@ EOF
 #cd $LFS/sources
 #rm -rf "$LFS/sources/gcc-10.2.0"
 #
-EOZ
+#EOZ
 #
-if [[ $? -eq 2 ]]
-then
-	exit 2
-fi
+#if [[ $? -eq 2 ]]
+#then
+#	exit 2
+#fi
 #### Preparing the Virtual Kernel ####
 
 #chown -R root:root $LFS/{usr,lib,lib64,var,etc,bin,sbin,tools}
@@ -700,23 +700,27 @@ fi
 #mknod -m 666 $LFS/dev/null c 1 3
 #
 #mount --bind /dev $LFS/dev
+#mount --bind /dev/pts $LFS/dev/pts
 #mount -t proc proc $LFS/proc
 #mount -t sysfs sysfs $LFS/sys
 #mount -t tmpfs tmpfs $LFS/run
-#mount --bind /dev/pts $LFS/dev/pts
 #
+#if [ -h $LFS/dev/shm ]
+#then
+#	mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+#fi
 ##### Entering In the environment ####
 #
-#chroot "$LFS" /usr/bin/env -i \
-#HOME=/root \
-#ERROR=/error \
-#GREEN='\e[32m' \
-#RED='\e[31m' \
-#WHITE='\e[0m' \
-#TERM="$TERM" \
-#PS1='(lfs chroot) \u:\w\$ ' \
-#PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-#/bin/bash --login +h << "EOZ"
+chroot "$LFS" /usr/bin/env -i \
+HOME=/root \
+ERROR=/error \
+GREEN='\e[32m' \
+RED='\e[31m' \
+WHITE='\e[0m' \
+TERM="$TERM" \
+PS1='(lfs chroot) \u:\w\$ ' \
+PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+/bin/bash --login +h << "EOZ"
 #
 #mkdir -p /{boot,home,mnt,opt,srv}
 #mkdir -p /etc/{opt,sysconfig}
@@ -735,7 +739,7 @@ fi
 #
 #ln -sv /proc/self/mounts /etc/mtab
 #echo "127.0.0.1 localhost $(hostname)" > /etc/hosts
-#
+##
 #cat > /etc/passwd << "EOF"
 #root:x:0:0:root:/root:/bin/bash
 #bin:x:1:1:bin:/dev/null:/bin/false
@@ -752,7 +756,7 @@ fi
 #uuidd:x:80:80:UUID Generation Daemon User:/dev/null:/bin/false
 #nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
 #EOF
-#
+##
 #cat > /etc/group << "EOF"
 #root:x:0:
 #bin:x:1:daemon
@@ -789,11 +793,11 @@ fi
 #nogroup:x:99:
 #users:x:999:
 #EOF
-#
+##
 #echo "tester:x:101:101::/home/tester:/bin/bash" >> /etc/passwd
 #echo "tester:x:101:" >> /etc/group
 #install -o tester -d /home/tester
-#exec /bin/bash --login +h
+#
 #touch /var/log/{btmp,lastlog,faillog,wtmp}
 #chgrp -v utmp /var/log/lastlog
 #chmod -v 664  /var/log/lastlog
@@ -801,35 +805,49 @@ fi
 #
 ##### Libstdc++ from GCC-10.2.0 ####
 #
+#echo -e "##### Libstdc++ from GCC-10.2.0 ####" >> $ERROR
 #echo -e "Installing Libstdc++ from GCC-10.2.0..."
 #tar xf /sources/gcc-10.2.0.tar.xz -C /sources/
 #cd /sources/gcc-10.2.0
 #mkdir build
 #cd build
 #../libstdc++-v3/configure \
-#CXXFLAGS="-g -O2 -D_GNU_SOURCE" \
-#--prefix=/usr \
-#--disable-multilib \
-#--disable-nls \
-#--host=$(uname -m)-lfs-linux-gnu \
-#--disable-libstdcxx-pch > /dev/null 2>> $ERROR
+#	CXXFLAGS="-g -O2 -D_GNU_SOURCE" \
+#	--prefix=/usr \
+#	--disable-multilib \
+#	--disable-nls \
+#	--host=$(uname -m)-lfs-linux-gnu \
+#	--disable-libstdcxx-pch > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make install > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> /error
+#if [[ -f /usr/bin/g++ ]]
+#then
+#	echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Libstdc++ not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd /sources
 #rm -rf gcc-10.2.0
-#echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
-#
+
 #### Gettext-0.21 ###
 #
+#
+#echo -e "#### Gettext-0.21 ###" >> $ERROR 
 #echo -e "Installing Gettext..."
 #tar xf /sources/gettext-0.21.tar.xz -C /sources/
 #cd /sources/gettext-0.21
 #./configure --disable-shared > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
+#if [[ -f /usr/bin/xgettext ]]
+#then
+#	echo -e "Gettext installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Gettext not installed [${RED}FAILED${WHITE}]"
+#fi
 #cd /sources
 #rm -rf gettext-0.21
-#echo -e "Gettext installed [${GREEN}OK${WHITE}]"
 #
 ##### Bison-3.7.5 ###
 #
@@ -918,7 +936,7 @@ fi
 #find /usr/{lib,libexec} -name \*.la -delete
 #rm -rf /usr/share/{info,man,doc}/*
 #
-#EOZ
+EOZ
 #
 #
 ##### cleaning and backup CrossToolchain and Temporary Tools ####
