@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # copy paste the host verification script From the book
 
 export LC_ALL=C

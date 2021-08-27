@@ -8,8 +8,8 @@ apt -y install build-essential bison gawk texinfo
 rm -rf /bin/sh
 rm -rf /usr/bin/yacc
 rm -rf /usr/bin/awk
-ln -sf /bin/bison /usr/bin/yacc
-ln -sf /bin/gawk /usr/bin/awk
+ln -sf /usr/bin/bison /usr/bin/yacc
+ln -sf /usr/bin/gawk /usr/bin/awk
 ln -sf /bin/bash /bin/sh
 
 ### create the root directory ###

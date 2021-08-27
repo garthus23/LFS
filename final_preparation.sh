@@ -9,51 +9,51 @@ RED='\e[31m'
 WHITE='\e[0m'
 
 ### disk verification ####
-if [[ $(mount | grep -c "/mnt/lfs") == 0 ]]
-then
-	echo -e "${RED}Error ${WHITE}: The lfs Root partition is not mounted on any directory"
-	exit 1
-fi
-echo -e "Disk partitions and filesystem [${GREEN}OK${WHITE}]"
-
-## source directory creation and Download ###
-mkdir  $LFS/sources
-chmod  a+wt $LFS/sources
-
-wget https://ftp.wrz.de/pub/LFS/lfs-packages/lfs-packages-10.1.tar --directory-prefix=$LFS/sources -q --show-progress
-if [[ -f "$LFS/sources/lfs-packages-10.1.tar" ]]
-then
-	tar xfs $LFS/sources/lfs-packages-10.1.tar -C $LFS/sources/
-	mv $LFS/sources/10.1/* $LFS/sources/
-	rmdir $LFS/sources/10.1	
-else
-	echo -e "${RED}Error ${WHITE}: Problem extracting sources"
-	exit 2
-fi
-
-## checksum sources validation ###
-pushd $LFS/sources
-	echo -e "checksum validation..."
-	md5sum --quiet -c md5sums 2> checksum.txt
-popd > /dev/null
-
-if [[ $(grep -c ^ $LFS/sources/checksum.txt) > 0 ]]
-then
-	echo -e "${RED}Error ${WHITE}: checksum incorrect"
-	exit 3
-else
-	echo -e "cheksum [${GREEN}OK${WHITE}]"
-fi
-
-
-## Limited directory Layout ###
-mkdir -p $LFS/{bin,etc,lib,lib64,sbin,usr,var}
-mkdir -p $LFS/tools  # cross compiler directory
-
- create unprivileged user ####
-groupadd lfs
-useradd -s /bin/bash -g lfs -m -k /dev/null lfs
-chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
+#if [[ $(mount | grep -c "/mnt/lfs") == 0 ]]
+#then
+#	echo -e "${RED}Error ${WHITE}: The lfs Root partition is not mounted on any directory"
+#	exit 1
+#fi
+#echo -e "Disk partitions and filesystem [${GREEN}OK${WHITE}]"
+#
+### source directory creation and Download ###
+#mkdir  $LFS/sources
+#chmod  a+wt $LFS/sources
+#
+#wget https://ftp.wrz.de/pub/LFS/lfs-packages/lfs-packages-10.1.tar --directory-prefix=$LFS/sources -q --show-progress
+#if [[ -f "$LFS/sources/lfs-packages-10.1.tar" ]]
+#then
+#	tar xfs $LFS/sources/lfs-packages-10.1.tar -C $LFS/sources/
+#	mv $LFS/sources/10.1/* $LFS/sources/
+#	rmdir $LFS/sources/10.1	
+#else
+#	echo -e "${RED}Error ${WHITE}: Problem extracting sources"
+#	exit 2
+#fi
+#
+### checksum sources validation ###
+#pushd $LFS/sources
+#	echo -e "checksum validation..."
+#	md5sum --quiet -c md5sums 2> checksum.txt
+#popd > /dev/null
+#
+#if [[ $(grep -c ^ $LFS/sources/checksum.txt) > 0 ]]
+#then
+#	echo -e "${RED}Error ${WHITE}: checksum incorrect"
+#	exit 3
+#else
+#	echo -e "cheksum [${GREEN}OK${WHITE}]"
+#fi
+#
+#
+### Limited directory Layout ###
+#mkdir -p $LFS/{bin,etc,lib,lib64,sbin,usr,var}
+#mkdir -p $LFS/tools  # cross compiler directory
+#
+##### create unprivileged user ####
+#groupadd lfs
+#useradd -s /bin/bash -g lfs -m -k /dev/null lfs
+#chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
 
 ############## Building the Cross Compiler #################
 
@@ -91,79 +91,79 @@ CONFIG_SITE=$LFS/usr/share/config.site
 export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 EOF
 
-
-### Binutils-2.36.1 package ####
-echo "#### Binutils-2.36.1 package ####" >> $ERROR
-echo -e "Installing Binutils-2.36.1 package..."
-tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
-mkdir $LFS/sources/binutils-2.36.1/build
-cd $LFS/sources/binutils-2.36.1/build
-../configure --prefix=$LFS/tools \
---with-sysroot=$LFS \
---target=$LFS_TGT \
---disable-nls \
---disable-werror > /dev/null 2>> $ERROR
-make > /dev/null 2>> $ERROR
-make install > /dev/null 2>> $ERROR
-if [[ -f $LFS/tools/x86_64-lfs-linux-gnu/bin/as ]]
-then
-	echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
-else
-	echo -e "Binutils-2.36.1 not installed [${RED}FAILED${WHITE}]"
-	exit 2
-fi	
-cd $LFS/sources
-rm -rf $LFS/sources/binutils-2.36.1
-
-### GCC-10.2.0 package ###
-echo -e "#### GCC-10.2.0 package ####" >> $ERROR
-echo -e "Installing GCC-10.2.0 package..."
-tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
-cd $LFS/sources/gcc-10.2.0
-tar -xf ../mpfr-4.1.0.tar.xz
-mv mpfr-4.1.0 mpfr
-tar -xf ../gmp-6.2.1.tar.xz
-mv gmp-6.2.1 gmp
-tar -xf ../mpc-1.2.1.tar.gz
-mv mpc-1.2.1 mpc
-sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
-mkdir build
-cd build
-../configure \
---target=$LFS_TGT \
---prefix=$LFS/tools \
---with-glibc-version=2.11 \
---with-sysroot=$LFS \
---with-newlib \
---without-headers \
---enable-initfini-array \
---disable-nls \
---disable-shared \
---disable-multilib \
---disable-decimal-float \
---disable-threads \
---disable-libatomic \
---disable-libgomp \
---disable-libquadmath \
---disable-libssp \
---disable-libvtv \
---disable-libstdcxx \
---enable-languages=c,c++ > /dev/null 2>> $ERROR
-make > /dev/null 2>> $ERROR
-make install > /dev/null 2>> $ERROR
-cd ..
-cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
-$LFS/tools/lib/gcc/x86_64-lfs-linux-gnu/10.2.0/install-tools/include/limits.h
-if [[ -d $LFS/tools/lib/gcc ]]
-then
-	echo -e "gcc-10.2.0 installed [${GREEN}OK${WHITE}]"
-else
-	echo -e "gcc-10.2.0 not installed [${RED}FAILED${WHITE}]"
-	exit 2
-fi
-cd $LFS/sources
-rm -rf gcc-10.2.0
-
+#
+#### Binutils-2.36.1 package ####
+#echo "#### Binutils-2.36.1 package ####" >> $ERROR
+#echo -e "Installing Binutils-2.36.1 package..."
+#tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
+#mkdir $LFS/sources/binutils-2.36.1/build
+#cd $LFS/sources/binutils-2.36.1/build
+#../configure --prefix=$LFS/tools \
+#	--with-sysroot=$LFS \
+#	--target=$LFS_TGT \
+#	--disable-nls \
+#	--disable-werror > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/tools/x86_64-lfs-linux-gnu/bin/as ]]
+#then
+#	echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Binutils-2.36.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi	
+#cd $LFS/sources
+#rm -rf $LFS/sources/binutils-2.36.1
+#
+#### GCC-10.2.0 package ###
+#echo -e "#### GCC-10.2.0 package ####" >> $ERROR
+#echo -e "Installing GCC-10.2.0 package..."
+#tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
+#cd $LFS/sources/gcc-10.2.0
+#tar -xf ../mpfr-4.1.0.tar.xz
+#mv mpfr-4.1.0 mpfr
+#tar -xf ../gmp-6.2.1.tar.xz
+#mv gmp-6.2.1 gmp
+#tar -xf ../mpc-1.2.1.tar.gz
+#mv mpc-1.2.1 mpc
+#sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+#mkdir build
+#cd build
+#../configure \
+#	--target=$LFS_TGT \
+#	--prefix=$LFS/tools \
+#	--with-glibc-version=2.11 \
+#	--with-sysroot=$LFS \
+#	--with-newlib \
+#	--without-headers \
+#	--enable-initfini-array \
+#	--disable-nls \
+#	--disable-shared \
+#	--disable-multilib \
+#	--disable-decimal-float \
+#	--disable-threads \
+#	--disable-libatomic \
+#	--disable-libgomp \
+#	--disable-libquadmath \
+#	--disable-libssp \
+#	--disable-libvtv \
+#	--disable-libstdcxx \
+#	--enable-languages=c,c++ > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#cd ..
+#cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+#$LFS/tools/lib/gcc/x86_64-lfs-linux-gnu/10.2.0/install-tools/include/limits.h
+#if [[ -d $LFS/tools/lib/gcc ]]
+#then
+#	echo -e "gcc-10.2.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "gcc-10.2.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd $LFS/sources
+#rm -rf gcc-10.2.0
+#
 #### Linux-5.10.17 API Headers ###
 #echo -e "#### Linux-5.10.17 package ####" >> $ERROR
 #echo -e "Installing Linux-5.10.17 Headers package..."
@@ -196,12 +196,12 @@ rm -rf gcc-10.2.0
 #mkdir build
 #cd build
 #../configure \
-#--prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(../scripts/config.guess) \
-#--enable-kernel=3.2 \
-#--with-headers=$LFS/usr/include \
-#libc_cv_slibdir=/lib > /dev/null 2>> $ERROR
+#	--prefix=/usr \
+#	--host=$LFS_TGT \
+#	--build=$(../scripts/config.guess) \
+#	--enable-kernel=3.2 \
+#	--with-headers=$LFS/usr/include \
+#	libc_cv_slibdir=/lib > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #if [[ -f $LFS/usr/bin/ldd ]]
@@ -227,13 +227,13 @@ rm -rf gcc-10.2.0
 #mkdir build
 #cd build
 #../libstdc++-v3/configure \
-#--host=$LFS_TGT \
-#--build=$(../config.guess) \
-#--prefix=/usr \
-#--disable-multilib \
-#--disable-nls \
-#--disable-libstdcxx-pch \
-#--with-gxx-include-dir=/tools/$LFS_TGT/include/c++/10.2.0 > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--build=$(../config.guess) \
+#	--prefix=/usr \
+#	--disable-multilib \
+#	--disable-nls \
+#	--disable-libstdcxx-pch \
+#	--with-gxx-include-dir=/tools/$LFS_TGT/include/c++/10.2.0 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #if [[ -d /mnt/lfs/tools/x86_64-lfs-linux-gnu/include/c++ ]]
@@ -245,7 +245,7 @@ rm -rf gcc-10.2.0
 #fi
 #cd $LFS/sources
 #rm -rf gcc-10.2.0
-
+#
 #
 ############################ Cross Compiling Temporary Tools ##############################
 #
@@ -258,8 +258,8 @@ rm -rf gcc-10.2.0
 #sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
 #echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #cd $LFS/sources
@@ -286,15 +286,15 @@ rm -rf gcc-10.2.0
 #  make -C progs tic > /dev/null 2>> $ERROR
 #popd
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(./config.guess) \
-#--mandir=/usr/share/man \
-#--with-manpage-format=normal \
-#--with-shared \
-#--without-debug \
-#--without-ada \
-#--without-normal \
-#--enable-widec > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--build=$(./config.guess) \
+#	--mandir=/usr/share/man \
+#	--with-manpage-format=normal \
+#	--with-shared \
+#	--without-debug \
+#	--without-ada \
+#	--without-normal \
+#	--enable-widec > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install > /dev/null 2>> $ERROR
 #echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
@@ -311,46 +311,60 @@ rm -rf gcc-10.2.0
 #rm -rf "$LFS/sources/ncurses-6.2"
 
 ##### bash-5.1 ####
-#
+
+#echo -e "##### bash-5.1 ####" >> $ERROR
 #echo -e "Installing bash-5.1..."
 #tar xf $LFS/sources/bash-5.1.tar.gz -C $LFS/sources/
 #cd $LFS/sources/bash-5.1
 #./configure --prefix=/usr \
-#--build=$(support/config.guess) \
-#--host=$LFS_TGT \
-#--without-bash-malloc > /dev/null 2>> $ERROR
+#	--build=$(support/config.guess) \
+#	--host=$LFS_TGT \
+#	--without-bash-malloc > /dev/null 2>> $ERROR
 #make > /dev/null 2> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-#mv $LFS/usr/bin/bash $LFS/bin/bash
-#ln -s bash $LFS/bin/sh
+#mv -v $LFS/usr/bin/bash $LFS/bin/bash
+#ln -sv bash $LFS/bin/sh
+#if [[ -f $LFS/bin/bash ]]
+#then
+#	echo -e "bash installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "bash not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/bash-5.1"
-#echo -e "bash installed [${GREEN}OK${WHITE}]"
-#
+
+
 ##### Coreutils-8.32 ####
 #
-#echo -e "Installing Coreutils..."
-#tar xf $LFS/sources/coreutils-8.32.tar.xz -C $LFS/sources/
-#cd $LFS/sources/coreutils-8.32
-#./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(build-aux/config.guess) \
-#--enable-install-program=hostname \
-#--enable-no-install-program=kill,uptime > /dev/null 2>> $ERROR
-#make > /dev/null 2>> $ERROR
-#make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-#mv -v$LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
-#mv -v $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
-#mv -v $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
-#mv -v $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
-#mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
-#mkdir -p $LFS/usr/share/man/man8 
-#mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
-#sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
-#cd $LFS/sources
-#rm -rf "$LFS/sources/coreutils-8.32"
-#echo -e "coreutils installed [${GREEN}OK${WHITE}]"
-#
+echo -e "##### Coreutils-8.32 ####" >> $ERROR
+echo -e "Installing Coreutils..."
+tar xf $LFS/sources/coreutils-8.32.tar.xz -C $LFS/sources/
+cd $LFS/sources/coreutils-8.32
+./configure --prefix=/usr \
+	--host=$LFS_TGT \
+	--build=$(build-aux/config.guess) \
+	--enable-install-program=hostname \
+	--enable-no-install-program=kill,uptime > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+mv -v $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
+mv -v $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
+mv -v $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
+mv -v $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
+mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
+mkdir -p $LFS/usr/share/man/man8 
+mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
+if [[ -f $LFS/bin/cat ]]
+then
+	echo -e "coreutils installed [${GREEN}OK${WHITE}]"
+else
+	echo -e "coreutils not installed [${RED}FAILED${WHITE}]"
+fi
+cd $LFS/sources
+rm -rf "$LFS/sources/coreutils-8.32"
+
 ##### Diffutils-3.7 ####
 #
 #echo -e "Installing diffutils..."
