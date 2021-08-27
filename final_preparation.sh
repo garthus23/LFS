@@ -335,38 +335,39 @@ EOF
 #rm -rf "$LFS/sources/bash-5.1"
 
 
-##### Coreutils-8.32 ####
+#### Coreutils-8.32 ####
 #
-echo -e "##### Coreutils-8.32 ####" >> $ERROR
-echo -e "Installing Coreutils..."
-tar xf $LFS/sources/coreutils-8.32.tar.xz -C $LFS/sources/
-cd $LFS/sources/coreutils-8.32
-./configure --prefix=/usr \
-	--host=$LFS_TGT \
-	--build=$(build-aux/config.guess) \
-	--enable-install-program=hostname \
-	--enable-no-install-program=kill,uptime > /dev/null 2>> $ERROR
-make > /dev/null 2>> $ERROR
-make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-mv -v $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
-mv -v $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
-mv -v $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
-mv -v $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
-mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
-mkdir -p $LFS/usr/share/man/man8 
-mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
-sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
-if [[ -f $LFS/bin/cat ]]
-then
-	echo -e "coreutils installed [${GREEN}OK${WHITE}]"
-else
-	echo -e "coreutils not installed [${RED}FAILED${WHITE}]"
-fi
-cd $LFS/sources
-rm -rf "$LFS/sources/coreutils-8.32"
+#echo -e "##### Coreutils-8.32 ####" >> $ERROR
+#echo -e "Installing Coreutils..."
+#tar xf $LFS/sources/coreutils-8.32.tar.xz -C $LFS/sources/
+#cd $LFS/sources/coreutils-8.32
+#./configure --prefix=/usr \
+#	--host=$LFS_TGT \
+#	--build=$(build-aux/config.guess) \
+#	--enable-install-program=hostname \
+#	--enable-no-install-program=kill,uptime > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#mv -v $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
+#mv -v $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
+#mv -v $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
+#mv -v $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
+#mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
+#mkdir -p $LFS/usr/share/man/man8 
+#mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+#sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
+#if [[ -f $LFS/bin/cat ]]
+#then
+#	echo -e "coreutils installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "coreutils not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd $LFS/sources
+#rm -rf "$LFS/sources/coreutils-8.32"
 
 ##### Diffutils-3.7 ####
-#
+#echo -e "##### Diffutils-3.7 ####" >> $ERROR
 #echo -e "Installing diffutils..."
 #tar xf $LFS/sources/diffutils-3.7.tar.xz -C $LFS/sources/
 #cd $LFS/sources/diffutils-3.7
@@ -375,71 +376,105 @@ rm -rf "$LFS/sources/coreutils-8.32"
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #cd $LFS/sources
 #rm -rf "$LFS/sources/diffutils-3.7"
-#echo -e "diffutils installed [${GREEN}OK${WHITE}]"
+#if [[ -f $LFS/usr/bin/diff ]]
+#then
+#	echo -e "diffutils installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "diffutils not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #
 ##### File-5.39 ####
-#
+#echo -e "##### File-5.39 ####" >> $ERROR
 #echo -e "Installing File..."
 #tar xf $LFS/sources/file-5.39.tar.gz -C $LFS/sources/
 #cd $LFS/sources/file-5.39
 #mkdir build
 #pushd build
-#../configure --disable-bzlib \
-#--disable-libseccomp \
-#--disable-xzlib \
-#--disable-zlib > /dev/null 2>> $ERROR
-#make > /dev/null 2>> $ERROR
+#   ../configure --disable-bzlib \
+#		--disable-libseccomp \
+#		--disable-xzlib \
+#		--disable-zlib > /dev/null 2>> $ERROR
+#   make > /dev/null 2>> $ERROR
 #popd
 #./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess) > /dev/null 2>> $ERROR
 #make FILE_COMPILE=$(pwd)/build/src/file > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/usr/bin/file ]]
+#then
+#	echo -e "file installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "file not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/file-5.39"
-#echo -e "file installed [${GREEN}OK${WHITE}]"
 #
 ##### Findutils-4.8.0 ####
-#
+#echo -e "##### Findutils-4.8.0 ####" >> $ERROR
 #echo -e "Installing Findutils..."
 #tar xf $LFS/sources/findutils-4.8.0.tar.xz -C $LFS/sources/
 #cd $LFS/sources/findutils-4.8.0
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+#    --host=$LFS_TGT \
+#    --build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #mv $LFS/usr/bin/find $LFS/bin
 #sed -i 's|find:=${BINDIR}|find:=/bin|' $LFS/usr/bin/updatedb
+#if [[ -f $LFS/bin/find ]]
+#then
+#	echo -e "findutils installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "findutils not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/findutils-4.8.0"
-#echo -e "findutils installed [${GREEN}OK${WHITE}]"
+
 #
 ##### Gawk-5.1.0 ####
-#
+
+#echo -e "##### Gawk-5.1.0 ####" >> $ERROR
 #echo -e "Installing Gawk..."
 #tar xf $LFS/sources/gawk-5.1.0.tar.xz -C $LFS/sources/
 #cd $LFS/sources/gawk-5.1.0
+#sed -i 's/extras//' Makefile.in
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(./config.guess) > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--build=$(./config.guess) > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/usr/bin/gawk ]]
+#then
+#	echo -e "gawk installled [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "gawk not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/gawk-5.1.0"
-#echo -e "gawk installled [${GREEN}OK${WHITE}]"
 #
 ##### Grep-3.6 ####
 #
-#echo -e "Installing Grep..."
-#tar xf $LFS/sources/grep-3.6.tar.xz -C $LFS/sources/
-#cd $LFS/sources/grep-3.6
-#./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--bindir=/bin > /dev/null 2>> $ERROR
-#make > /dev/null 2>> $ERROR
-#make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-#cd $LFS/sources
-#rm -rf "$LFS/sources/grep-3.6"
-#echo -e "Grep installled [${GREEN}OK${WHITE}]"
+echo -e "##### Grep-3.6 ####" >> $ERROR
+echo -e "Installing Grep..."
+tar xf $LFS/sources/grep-3.6.tar.xz -C $LFS/sources/
+cd $LFS/sources/grep-3.6
+./configure --prefix=/usr \
+	--host=$LFS_TGT \
+	--bindir=/bin > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+if [[ -f $LFS/bin/grep ]]
+then
+	echo -e "Grep installled [${GREEN}OK${WHITE}]"
+else
+	echo -e "Grep not installed [${RED}FAILED${WHITE}]"
+	exit 2
+fi
+cd $LFS/sources
+rm -rf "$LFS/sources/grep-3.6"
 #
 ##### Gzip-1.10 ####
 #
