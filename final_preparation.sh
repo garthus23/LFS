@@ -15,11 +15,11 @@ WHITE='\e[0m'
 #	exit 1
 #fi
 #echo -e "Disk partitions and filesystem [${GREEN}OK${WHITE}]"
-
+#
 ### source directory creation and Download ###
 #mkdir  $LFS/sources
 #chmod  a+wt $LFS/sources
-
+#
 #wget https://ftp.wrz.de/pub/LFS/lfs-packages/lfs-packages-10.1.tar --directory-prefix=$LFS/sources -q --show-progress
 #if [[ -f "$LFS/sources/lfs-packages-10.1.tar" ]]
 #then
@@ -30,13 +30,13 @@ WHITE='\e[0m'
 #	echo -e "${RED}Error ${WHITE}: Problem extracting sources"
 #	exit 2
 #fi
-
+#
 ### checksum sources validation ###
 #pushd $LFS/sources
 #	echo -e "checksum validation..."
 #	md5sum --quiet -c md5sums 2> checksum.txt
 #popd > /dev/null
-
+#
 #if [[ $(grep -c ^ $LFS/sources/checksum.txt) > 0 ]]
 #then
 #	echo -e "${RED}Error ${WHITE}: checksum incorrect"
@@ -44,18 +44,18 @@ WHITE='\e[0m'
 #else
 #	echo -e "cheksum [${GREEN}OK${WHITE}]"
 #fi
-
-
+#
+#
 ### Limited directory Layout ###
 #mkdir -p $LFS/{bin,etc,lib,lib64,sbin,usr,var}
 #mkdir -p $LFS/tools  # cross compiler directory
 
-## create unprivileged user ####
-#groupadd lfs
-#useradd -s /bin/bash -g lfs -m -k /dev/null lfs
-#chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
+# create unprivileged user ####
+groupadd lfs
+useradd -s /bin/bash -g lfs -m -k /dev/null lfs
+chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
 
-################ Building the Cross Compiler #################
+############### Building the Cross Compiler #################
 
 sudo -u lfs bash << "EOZ" 
 
@@ -114,7 +114,7 @@ EOF
 #fi	
 #cd $LFS/sources
 #rm -rf $LFS/sources/binutils-2.36.1
-
+#
 #### GCC-10.2.0 package ###
 #echo -e "#### GCC-10.2.0 package ####" >> $ERROR
 #echo -e "Installing GCC-10.2.0 package..."
@@ -163,7 +163,7 @@ EOF
 #fi
 #cd $LFS/sources
 #rm -rf gcc-10.2.0
-
+#
 #### Linux-5.10.17 API Headers ###
 #echo -e "#### Linux-5.10.17 package ####" >> $ERROR
 #echo -e "Installing Linux-5.10.17 Headers package..."
@@ -179,11 +179,12 @@ EOF
 #	echo -e "Linux-5.10.17 Headers installed [${GREEN}OK${WHITE}]"
 #else
 #	echo -e "Linux-5.10.17 Headers not installed [${RED}FAILED${WHITE}]"
+#	exit 2
 #fi
 #cd $LFS/sources
 #rm -rf linux-5.10.17
-
-
+#
+#
 ##### Glibc-2.33 ####
 #echo -e "##### Glibc-2.33 ####" >> $ERROR
 #echo -e "Installing Glibc-2.33 package..."
@@ -208,13 +209,14 @@ EOF
 #	echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
 #else
 #	echo -e "Glibc-2.33 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
 #fi
 #
 #$LFS/tools/libexec/gcc/$LFS_TGT/10.2.0/install-tools/mkheaders
 #cd $LFS/sources
 #rm -rf glibc-2.33
-
-
+#
+#
 #
 #
 ##### Libstdc++ from GCC-10.2.0 ####
@@ -234,21 +236,22 @@ EOF
 #--with-gxx-include-dir=/tools/$LFS_TGT/include/c++/10.2.0 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-if [[ -d /mnt/lfs/tools/x86_64-lfs-linux-gnu/include/c++ ]]
-then
-	echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
-else
-	echo -e "Libstdc++ not installed [${RED}FAILED${WHITE}]"
-fi
+#if [[ -d /mnt/lfs/tools/x86_64-lfs-linux-gnu/include/c++ ]]
+#then
+#	echo -e "Libstdc++ installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Libstdc++ not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf gcc-10.2.0
-#
+
 #
 ############################ Cross Compiling Temporary Tools ##############################
 #
 #
 ##### M4-1.4.18 ####
-#
+#echo -e "##### M4-1.4.18 ####" >> $ERROR
 #echo -e "Installing M4..."
 #tar xf $LFS/sources/m4-1.4.18.tar.xz -C $LFS/sources/
 #cd $LFS/sources/m4-1.4.18
@@ -261,7 +264,13 @@ fi
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #cd $LFS/sources
 #rm -rf m4-1.4.18
-#echo -e "M4 installed [${GREEN}OK${WHITE}]"
+#if [[ -f $LFS/usr/bin/m4 ]]
+#then
+#	echo -e "M4 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "M4 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #
 ##### Ncurses-6.2 ####
 #
@@ -570,6 +579,10 @@ fi
 #
 EOZ
 #
+if [[ $? -eq 2 ]]
+then
+	exit 2
+fi
 #### Preparing the Virtual Kernel ####
 
 #chown -R root:root $LFS/{usr,lib,lib64,var,etc,bin,sbin,tools}
