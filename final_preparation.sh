@@ -457,27 +457,28 @@ EOF
 #
 ##### Grep-3.6 ####
 #
-echo -e "##### Grep-3.6 ####" >> $ERROR
-echo -e "Installing Grep..."
-tar xf $LFS/sources/grep-3.6.tar.xz -C $LFS/sources/
-cd $LFS/sources/grep-3.6
-./configure --prefix=/usr \
-	--host=$LFS_TGT \
-	--bindir=/bin > /dev/null 2>> $ERROR
-make > /dev/null 2>> $ERROR
-make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-if [[ -f $LFS/bin/grep ]]
-then
-	echo -e "Grep installled [${GREEN}OK${WHITE}]"
-else
-	echo -e "Grep not installed [${RED}FAILED${WHITE}]"
-	exit 2
-fi
-cd $LFS/sources
-rm -rf "$LFS/sources/grep-3.6"
+#echo -e "##### Grep-3.6 ####" >> $ERROR
+#echo -e "Installing Grep..."
+#tar xf $LFS/sources/grep-3.6.tar.xz -C $LFS/sources/
+#cd $LFS/sources/grep-3.6
+#./configure --prefix=/usr \
+#	--host=$LFS_TGT \
+#	--bindir=/bin > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/bin/grep ]]
+#then
+#	echo -e "Grep installled [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Grep not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd $LFS/sources
+#rm -rf "$LFS/sources/grep-3.6"
 #
 ##### Gzip-1.10 ####
 #
+#echo -e "##### Gzip-1.10 ####" >> $ERROR
 #echo -e "Installing Gzip..."
 #tar xf $LFS/sources/gzip-1.10.tar.xz -C $LFS/sources/
 #cd $LFS/sources/gzip-1.10
@@ -485,112 +486,161 @@ rm -rf "$LFS/sources/grep-3.6"
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #mv $LFS/usr/bin/gzip $LFS/bin
+#if [[ -f $LFS/bin/gzip ]]
+#then
+#	echo -e "Gzip installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Gzip not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/gzip-1.10"
-#echo -e "Gzip installed [${GREEN}OK${WHITE}]"
 #
 ##### Make-4.3 ####
 #
+#echo -e "##### Make-4.3 ####" >> $ERROR
 #echo -e "Installing make..."
 #tar xf $LFS/sources/make-4.3.tar.gz -C $LFS/sources/
 #cd $LFS/sources/make-4.3
 #./configure --prefix=/usr \
-#--without-guile \
-#--host=$LFS_TGT \
-#--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+#	--without-guile \
+#	--host=$LFS_TGT \
+#	--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/usr/bin/make ]]
+#then
+#	echo -e "Make installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Make not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/make-4.3"
-#echo -e "Make installed [${GREEN}OK${WHITE}]"
 #
 ##### Patch-2.7.6 ####
 #
+#echo -e "##### Patch-2.7.6 ####" >> $ERROR
 #echo -e "Installing patch..."
 #tar xf $LFS/sources/patch-2.7.6.tar.xz -C $LFS/sources/
 #cd $LFS/sources/patch-2.7.6
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/usr/bin/patch ]]
+#then
+#	echo -e "Patch installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Patch not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/patch-2.7.6"
-#echo -e "Patch installed [${GREEN}OK${WHITE}]"
 #
 ##### Sed-4.8 ####
 #
+#echo -e "##### Sed-4.8 ####" >> $ERROR
 #echo -e "Installing sed..."
 #tar xf $LFS/sources/sed-4.8.tar.xz -C $LFS/sources/
 #cd $LFS/sources/sed-4.8
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--bindir=/bin > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--bindir=/bin > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/bin/sed ]]
+#then
+#	echo -e "Sed installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Sed not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/sed-4.8"
-#echo -e "Sed installed [${GREEN}OK${WHITE}]"
 #
 ##### Tar-1.34 ####
-#
+
+#echo -e "##### Tar-1.34 ####" >> $ERROR
 #echo -e "Installing Tar..."
 #tar xf $LFS/sources/tar-1.34.tar.xz -C $LFS/sources/
 #cd $LFS/sources/tar-1.34
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(build-aux/config.guess) \
-#--bindir=/bin > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--build=$(build-aux/config.guess) \
+#	--bindir=/bin > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
+#if [[ -f $LFS/bin/tar ]]
+#then
+#	echo -e "Tar installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Tar not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/tar-1.34"
-#echo -e "Tar installed [${GREEN}OK${WHITE}]"
 #
 ##### Xz-5.2.5 ####
-#
+
+#echo -e "##### Xz-5.2.5 ####" >> $ERROR
 #echo -e "Installing Xz..."
 #tar xf $LFS/sources/xz-5.2.5.tar.xz -C $LFS/sources/
 #cd $LFS/sources/xz-5.2.5
 #./configure --prefix=/usr \
-#--host=$LFS_TGT \
-#--build=$(build-aux/config.guess) \
-#--disable-static \
-#--docdir=/usr/share/doc/xz-5.2.5 > /dev/null 2>> $ERROR
+#	--host=$LFS_TGT \
+#	--build=$(build-aux/config.guess) \
+#	--disable-static \
+#	--docdir=/usr/share/doc/xz-5.2.5 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #mv $LFS/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $LFS/bin
 #mv $LFS/usr/lib/liblzma.so.* $LFS/lib
 #ln -sf ../../lib/$(readlink $LFS/usr/lib/liblzma.so) $LFS/usr/lib/liblzma.so
+#if [[ -f $LFS/bin/xz ]]
+#then
+#	echo -e "Xz installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Xz not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/xz-5.2.5"
-#echo -e "Xz installed [${GREEN}OK${WHITE}]"
 #
 ##### Binutils-2.36.1 ####
 #
+#echo -e "##### Binutils-2.36.1 ####" >> $ERROR
 #echo -e "Installing Binutils..."
 #tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
 #cd $LFS/sources/binutils-2.36.1
 #mkdir build
 #cd build
 #../configure \
-#--prefix=/usr \
-#--build=$(../config.guess) \
-#--host=$LFS_TGT \
-#--disable-nls \
-#--enable-shared \
-#--disable-werror \
-#--enable-64-bit-bfd > /dev/null 2>> $ERROR
+#	--prefix=/usr \
+#	--build=$(../config.guess) \
+#	--host=$LFS_TGT \
+#	--disable-nls \
+#	--enable-shared \
+#	--disable-werror \
+#	--enable-64-bit-bfd > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib
+#if [[ -f $LFS/usr/bin/as ]]
+#then
+#	echo -e "Binutils installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Binutils not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/binutils-2.36.1"
-#echo -e "Binutils installed [${GREEN}OK${WHITE}]"
 #
 #
 ##### GCC-10.2.0 ####
 #
+#echo -e "##### GCC-10.2.0 ####" >> $ERROR
 #echo -e "Installing Gcc..."
 #tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
 #cd $LFS/sources/gcc-10.2.0
@@ -600,38 +650,40 @@ rm -rf "$LFS/sources/grep-3.6"
 #mv gmp-6.2.1 gmp
 #tar -xf ../mpc-1.2.1.tar.gz
 #mv mpc-1.2.1 mpc
-#case $(uname -m) in
-#  x86_64)
-#    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
-#  ;;
-#esac
+#sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
 #mkdir build
 #cd build
 #mkdir -p $LFS_TGT/libgcc
 #ln -sv ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
 #../configure \
-#--build=$(../config.guess) \
-#--host=$LFS_TGT \
-#--prefix=/usr \
-#CC_FOR_TARGET=$LFS_TGT-gcc \
-#--with-build-sysroot=$LFS \
-#--enable-initfini-array \
-#--disable-nls \
-#--disable-multilib \
-#--disable-decimal-float \
-#--disable-libatomic \
-#--disable-libgomp \
-#--disable-libquadmath \
-#--disable-libssp \
-#--disable-libvtv \
-#--disable-libstdcxx \
-#--enable-languages=c,c++ > /dev/null 2>> $ERROR
+#	--build=$(../config.guess) \
+#	--host=$LFS_TGT \
+#	--prefix=/usr \
+#	CC_FOR_TARGET=$LFS_TGT-gcc \
+#	--with-build-sysroot=$LFS \
+#	--enable-initfini-array \
+#	--disable-nls \
+#	--disable-multilib \
+#	--disable-decimal-float \
+#	--disable-libatomic \
+#	--disable-libgomp \
+#	--disable-libquadmath \
+#	--disable-libssp \
+#	--disable-libvtv \
+#	--disable-libstdcxx \
+#	--enable-languages=c,c++ > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 #ln -sv gcc $LFS/usr/bin/cc
+#if [[ -f $LFS/usr/bin/cc ]]
+#then
+#	echo -e "Gcc installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Gcc not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/gcc-10.2.0"
-#echo -e "Gcc installed [${GREEN}OK${WHITE}]"
 #
 EOZ
 #
