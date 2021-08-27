@@ -5,12 +5,12 @@
 apt -y install build-essential bison gawk texinfo
 
 ### symbolic link sh to bash ###
-rm /bin/sh
-rm /usr/bin/yacc
-rm /usr/bin/awk
-ln -s /bin/bison /usr/bin/yacc
-ln -s /bin/gawk /usr/bin/awk
-ln -s /bin/bash /bin/sh
+rm -rf /bin/sh
+rm -rf /usr/bin/yacc
+rm -rf /usr/bin/awk
+ln -sf /bin/bison /usr/bin/yacc
+ln -sf /bin/gawk /usr/bin/awk
+ln -sf /bin/bash /bin/sh
 
 ### create the root directory ###
 mkdir -pv /mnt/lfs

@@ -8,54 +8,54 @@ GREEN='\e[32m'
 RED='\e[31m'
 WHITE='\e[0m'
 
-#### disk verification ####
-#if [[ $(mount | grep -c "/mnt/lfs") == 0 ]]
-#then
-#	echo -e "${RED}Error ${WHITE}: The lfs Root partition is not mounted on any directory"
-#	exit 1
-#fi
-#echo -e "Disk partitions and filesystem [${GREEN}OK${WHITE}]"
-#
-### source directory creation and Download ###
-#mkdir  $LFS/sources
-#chmod  a+wt $LFS/sources
-#
-#wget https://ftp.wrz.de/pub/LFS/lfs-packages/lfs-packages-10.1.tar --directory-prefix=$LFS/sources -q --show-progress
-#if [[ -f "$LFS/sources/lfs-packages-10.1.tar" ]]
-#then
-#	tar xfs $LFS/sources/lfs-packages-10.1.tar -C $LFS/sources/
-#	mv $LFS/sources/10.1/* $LFS/sources/
-#	rmdir $LFS/sources/10.1	
-#else
-#	echo -e "${RED}Error ${WHITE}: Problem extracting sources"
-#	exit 2
-#fi
-#
-### checksum sources validation ###
-#pushd $LFS/sources
-#	echo -e "checksum validation..."
-#	md5sum --quiet -c md5sums 2> checksum.txt
-#popd > /dev/null
-#
-#if [[ $(grep -c ^ $LFS/sources/checksum.txt) > 0 ]]
-#then
-#	echo -e "${RED}Error ${WHITE}: checksum incorrect"
-#	exit 3
-#else
-#	echo -e "cheksum [${GREEN}OK${WHITE}]"
-#fi
-#
-#
-### Limited directory Layout ###
-#mkdir -p $LFS/{bin,etc,lib,lib64,sbin,usr,var}
-#mkdir -p $LFS/tools  # cross compiler directory
+### disk verification ####
+if [[ $(mount | grep -c "/mnt/lfs") == 0 ]]
+then
+	echo -e "${RED}Error ${WHITE}: The lfs Root partition is not mounted on any directory"
+	exit 1
+fi
+echo -e "Disk partitions and filesystem [${GREEN}OK${WHITE}]"
 
-# create unprivileged user ####
+## source directory creation and Download ###
+mkdir  $LFS/sources
+chmod  a+wt $LFS/sources
+
+wget https://ftp.wrz.de/pub/LFS/lfs-packages/lfs-packages-10.1.tar --directory-prefix=$LFS/sources -q --show-progress
+if [[ -f "$LFS/sources/lfs-packages-10.1.tar" ]]
+then
+	tar xfs $LFS/sources/lfs-packages-10.1.tar -C $LFS/sources/
+	mv $LFS/sources/10.1/* $LFS/sources/
+	rmdir $LFS/sources/10.1	
+else
+	echo -e "${RED}Error ${WHITE}: Problem extracting sources"
+	exit 2
+fi
+
+## checksum sources validation ###
+pushd $LFS/sources
+	echo -e "checksum validation..."
+	md5sum --quiet -c md5sums 2> checksum.txt
+popd > /dev/null
+
+if [[ $(grep -c ^ $LFS/sources/checksum.txt) > 0 ]]
+then
+	echo -e "${RED}Error ${WHITE}: checksum incorrect"
+	exit 3
+else
+	echo -e "cheksum [${GREEN}OK${WHITE}]"
+fi
+
+
+## Limited directory Layout ###
+mkdir -p $LFS/{bin,etc,lib,lib64,sbin,usr,var}
+mkdir -p $LFS/tools  # cross compiler directory
+
+ create unprivileged user ####
 groupadd lfs
 useradd -s /bin/bash -g lfs -m -k /dev/null lfs
 chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
 
-############### Building the Cross Compiler #################
+############## Building the Cross Compiler #################
 
 sudo -u lfs bash << "EOZ" 
 
@@ -92,78 +92,78 @@ export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 EOF
 
 
-#### Binutils-2.36.1 package ####
-#echo "#### Binutils-2.36.1 package ####" >> $ERROR
-#echo -e "Installing Binutils-2.36.1 package..."
-#tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
-#mkdir $LFS/sources/binutils-2.36.1/build
-#cd $LFS/sources/binutils-2.36.1/build
-#../configure --prefix=$LFS/tools \
-#--with-sysroot=$LFS \
-#--target=$LFS_TGT \
-#--disable-nls \
-#--disable-werror > /dev/null 2>> $ERROR
-#make > /dev/null 2>> $ERROR
-#make install > /dev/null 2>> $ERROR
-#if [[ -f $LFS/tools/x86_64-lfs-linux-gnu/bin/as ]]
-#then
-#	echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
-#else
-#	echo -e "Binutils-2.36.1 not installed [${RED}FAILED${WHITE}]"
-#	exit 2
-#fi	
-#cd $LFS/sources
-#rm -rf $LFS/sources/binutils-2.36.1
-#
-#### GCC-10.2.0 package ###
-#echo -e "#### GCC-10.2.0 package ####" >> $ERROR
-#echo -e "Installing GCC-10.2.0 package..."
-#tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
-#cd $LFS/sources/gcc-10.2.0
-#tar -xf ../mpfr-4.1.0.tar.xz
-#mv mpfr-4.1.0 mpfr
-#tar -xf ../gmp-6.2.1.tar.xz
-#mv gmp-6.2.1 gmp
-#tar -xf ../mpc-1.2.1.tar.gz
-#mv mpc-1.2.1 mpc
-#sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
-#mkdir build
-#cd build
-#../configure \
-#--target=$LFS_TGT \
-#--prefix=$LFS/tools \
-#--with-glibc-version=2.11 \
-#--with-sysroot=$LFS \
-#--with-newlib \
-#--without-headers \
-#--enable-initfini-array \
-#--disable-nls \
-#--disable-shared \
-#--disable-multilib \
-#--disable-decimal-float \
-#--disable-threads \
-#--disable-libatomic \
-#--disable-libgomp \
-#--disable-libquadmath \
-#--disable-libssp \
-#--disable-libvtv \
-#--disable-libstdcxx \
-#--enable-languages=c,c++ > /dev/null 2>> $ERROR
-#make > /dev/null 2>> $ERROR
-#make install > /dev/null 2>> $ERROR
-#cd ..
-#cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
-#$LFS/tools/lib/gcc/x86_64-lfs-linux-gnu/10.2.0/install-tools/include/limits.h
-#if [[ -d $LFS/tools/lib/gcc ]]
-#then
-#	echo -e "gcc-10.2.0 installed [${GREEN}OK${WHITE}]"
-#else
-#	echo -e "gcc-10.2.0 not installed [${RED}FAILED${WHITE}]"
-#	exit 2
-#fi
-#cd $LFS/sources
-#rm -rf gcc-10.2.0
-#
+### Binutils-2.36.1 package ####
+echo "#### Binutils-2.36.1 package ####" >> $ERROR
+echo -e "Installing Binutils-2.36.1 package..."
+tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
+mkdir $LFS/sources/binutils-2.36.1/build
+cd $LFS/sources/binutils-2.36.1/build
+../configure --prefix=$LFS/tools \
+--with-sysroot=$LFS \
+--target=$LFS_TGT \
+--disable-nls \
+--disable-werror > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make install > /dev/null 2>> $ERROR
+if [[ -f $LFS/tools/x86_64-lfs-linux-gnu/bin/as ]]
+then
+	echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
+else
+	echo -e "Binutils-2.36.1 not installed [${RED}FAILED${WHITE}]"
+	exit 2
+fi	
+cd $LFS/sources
+rm -rf $LFS/sources/binutils-2.36.1
+
+### GCC-10.2.0 package ###
+echo -e "#### GCC-10.2.0 package ####" >> $ERROR
+echo -e "Installing GCC-10.2.0 package..."
+tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
+cd $LFS/sources/gcc-10.2.0
+tar -xf ../mpfr-4.1.0.tar.xz
+mv mpfr-4.1.0 mpfr
+tar -xf ../gmp-6.2.1.tar.xz
+mv gmp-6.2.1 gmp
+tar -xf ../mpc-1.2.1.tar.gz
+mv mpc-1.2.1 mpc
+sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+mkdir build
+cd build
+../configure \
+--target=$LFS_TGT \
+--prefix=$LFS/tools \
+--with-glibc-version=2.11 \
+--with-sysroot=$LFS \
+--with-newlib \
+--without-headers \
+--enable-initfini-array \
+--disable-nls \
+--disable-shared \
+--disable-multilib \
+--disable-decimal-float \
+--disable-threads \
+--disable-libatomic \
+--disable-libgomp \
+--disable-libquadmath \
+--disable-libssp \
+--disable-libvtv \
+--disable-libstdcxx \
+--enable-languages=c,c++ > /dev/null 2>> $ERROR
+make > /dev/null 2>> $ERROR
+make install > /dev/null 2>> $ERROR
+cd ..
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h > \
+$LFS/tools/lib/gcc/x86_64-lfs-linux-gnu/10.2.0/install-tools/include/limits.h
+if [[ -d $LFS/tools/lib/gcc ]]
+then
+	echo -e "gcc-10.2.0 installed [${GREEN}OK${WHITE}]"
+else
+	echo -e "gcc-10.2.0 not installed [${RED}FAILED${WHITE}]"
+	exit 2
+fi
+cd $LFS/sources
+rm -rf gcc-10.2.0
+
 #### Linux-5.10.17 API Headers ###
 #echo -e "#### Linux-5.10.17 package ####" >> $ERROR
 #echo -e "Installing Linux-5.10.17 Headers package..."
@@ -274,6 +274,7 @@ EOF
 #
 ##### Ncurses-6.2 ####
 #
+#echo -e "##### Ncurses-6.2 ####" >> $ERROR
 #echo -e "Installing Ncurses..."
 #tar xf $LFS/sources/ncurses-6.2.tar.gz -C $LFS/sources/
 #cd $LFS/sources/ncurses-6.2
@@ -298,11 +299,17 @@ EOF
 #make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install > /dev/null 2>> $ERROR
 #echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
 #mv $LFS/usr/lib/libncursesw.so.6* $LFS/lib
-#ln -sf ../../lib/$(readlink $LFS/usr/lib/libncursesw.so) $LFS/usr/lib/libncursesw
+#ln -sf ../../lib/$(readlink $LFS/usr/lib/libncursesw.so) $LFS/usr/lib/libncursesw.so
+#if [[ -f $LFS/usr/bin/tic ]]
+#then
+#	echo -e "ncurses installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "ncurses not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd $LFS/sources
 #rm -rf "$LFS/sources/ncurses-6.2"
-#echo -e "ncursed installed [${GREEN}OK${WHITE}]"
-#
+
 ##### bash-5.1 ####
 #
 #echo -e "Installing bash-5.1..."
