@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # final preparation
 
 LFS=/mnt/lfs
@@ -57,18 +57,18 @@ chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
 
 ############# Building the Cross Compiler #################
 
-sudo -u lfs bash << "EOZ" 
+su - lfs bash << "EOZ" 
 
-LC_ALL=POSIX
-LFS=/mnt/lfs
-HOME=/home/lfs
-TERM=xterm-256color
-LFS_TGT=x86_64-lfs-linux-gnu
-PATH=$LFS/tools/bin:/bin:/usr/bin
-CONFIG_SITE=$LFS/usr/share/config.site
-ERROR=/mnt/lfs/sources/error
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-export MAKEFLAGS='-j4'
+#LC_ALL=POSIX
+#LFS=/mnt/lfs
+#HOME=/home/lfs
+#TERM=xterm-256color
+#LFS_TGT=x86_64-lfs-linux-gnu
+#PATH=$LFS/tools/bin:/bin:/usr/bin
+#CONFIG_SITE=$LFS/usr/share/config.site
+#ERROR=/mnt/lfs/sources/error
+#export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+#export MAKEFLAGS='-j4'
 
 GREEN='\e[32m'
 RED='\e[31m'
@@ -88,17 +88,21 @@ PATH=/usr/bin
 if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+ERROR=/mnt/lfs/sources/error
+MAKEFLAGS='-j4'
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE MAKEFLAGS
 EOF
 
+source ~/.bashrc
 
-#### Binutils-2.36.1 package ####
-echo "#### Binutils-2.36.1 package ####" >> $ERROR
+##### Binutils-2.36.1 ####
+echo -e "#### Binutils-2.36.1 ####" >> $ERROR
 echo -e "Installing Binutils-2.36.1 package..."
 tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
 mkdir $LFS/sources/binutils-2.36.1/build
 cd $LFS/sources/binutils-2.36.1/build
-../configure --prefix=$LFS/tools \
+../configure \
+	--prefix=$LFS/tools \
 	--with-sysroot=$LFS \
 	--target=$LFS_TGT \
 	--disable-nls \
@@ -115,7 +119,7 @@ fi
 cd $LFS/sources
 rm -rf $LFS/sources/binutils-2.36.1
 
-#### GCC-10.2.0 package ####
+#### GCC-10.2.0 pass 2 ####
 echo -e "#### GCC-10.2.0 package ####" >> $ERROR
 echo -e "Installing GCC-10.2.0 package..."
 tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
@@ -392,9 +396,9 @@ cd $LFS/sources/file-5.39
 mkdir build
 pushd build
    ../configure --disable-bzlib \
-		--disable-libseccomp \
-		--disable-xzlib \
-		--disable-zlib > /dev/null 2>> $ERROR
+	--disable-libseccomp \
+	--disable-xzlib \
+	--disable-zlib > /dev/null 2>> $ERROR
    make > /dev/null 2>> $ERROR
 popd
 ./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess) > /dev/null 2>> $ERROR
@@ -416,8 +420,8 @@ echo -e "Installing Findutils..."
 tar xf $LFS/sources/findutils-4.8.0.tar.xz -C $LFS/sources/
 cd $LFS/sources/findutils-4.8.0
 ./configure --prefix=/usr \
-    --host=$LFS_TGT \
-    --build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
+	--host=$LFS_TGT \
+	--build=$(build-aux/config.guess) > /dev/null 2>> $ERROR
 make > /dev/null 2>> $ERROR
 make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 mv $LFS/usr/bin/find $LFS/bin
@@ -461,9 +465,7 @@ echo -e "#### Grep-3.6 ####" >> $ERROR
 echo -e "Installing Grep..."
 tar xf $LFS/sources/grep-3.6.tar.xz -C $LFS/sources/
 cd $LFS/sources/grep-3.6
-./configure --prefix=/usr \
-	--host=$LFS_TGT \
-	--bindir=/bin > /dev/null 2>> $ERROR
+./configure --prefix=/usr --host=$LFS_TGT --bindir=/bin > /dev/null 2>> $ERROR
 make > /dev/null 2>> $ERROR
 make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 if [[ -f $LFS/bin/grep ]]
@@ -545,9 +547,7 @@ echo -e "#### Sed-4.8 ####" >> $ERROR
 echo -e "Installing sed..."
 tar xf $LFS/sources/sed-4.8.tar.xz -C $LFS/sources/
 cd $LFS/sources/sed-4.8
-./configure --prefix=/usr \
-	--host=$LFS_TGT \
-	--bindir=/bin > /dev/null 2>> $ERROR
+./configure --prefix=/usr --host=$LFS_TGT --bindir=/bin > /dev/null 2>> $ERROR
 make > /dev/null 2>> $ERROR
 make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 if [[ -f $LFS/bin/sed ]]
@@ -610,14 +610,13 @@ rm -rf "$LFS/sources/xz-5.2.5"
 
 #### Binutils-2.36.1 ####
 
-echo -e "#### Binutils-2.36.1 ####" >> $ERROR
-echo -e "Installing Binutils..."
+echo -e "#### Binutils-2.36.1 pass 2####" >> $ERROR
+echo -e "Installing Binutils pass 2..."
 tar xf $LFS/sources/binutils-2.36.1.tar.xz -C $LFS/sources/
 cd $LFS/sources/binutils-2.36.1
 mkdir build
 cd build
-../configure \
-	--prefix=/usr \
+../configure --prefix=/usr \
 	--build=$(../config.guess) \
 	--host=$LFS_TGT \
 	--disable-nls \
@@ -629,9 +628,9 @@ make DESTDIR=$LFS install > /dev/null 2>> $ERROR
 install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib
 if [[ -f $LFS/usr/bin/as ]]
 then
-	echo -e "Binutils installed [${GREEN}OK${WHITE}]"
+	echo -e "Binutils pass 2 installed [${GREEN}OK${WHITE}]"
 else
-	echo -e "Binutils not installed [${RED}FAILED${WHITE}]"
+	echo -e "Binutils pass 2 not installed [${RED}FAILED${WHITE}]"
 	exit 2
 fi
 cd $LFS/sources
@@ -640,8 +639,8 @@ rm -rf "$LFS/sources/binutils-2.36.1"
 
 #### GCC-10.2.0 ####
 
-echo -e "#### GCC-10.2.0 ####" >> $ERROR
-echo -e "Installing Gcc..."
+echo -e "#### GCC-10.2.0 pass 2####" >> $ERROR
+echo -e "Installing Gcc pass 2..."
 tar xf $LFS/sources/gcc-10.2.0.tar.xz -C $LFS/sources/
 cd $LFS/sources/gcc-10.2.0
 tar -xf ../mpfr-4.1.0.tar.xz
@@ -655,8 +654,7 @@ mkdir build
 cd build
 mkdir -p $LFS_TGT/libgcc
 ln -sv ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
-../configure \
-	--build=$(../config.guess) \
+../configure --build=$(../config.guess) \
 	--host=$LFS_TGT \
 	--prefix=/usr \
 	CC_FOR_TARGET=$LFS_TGT-gcc \
@@ -709,18 +707,19 @@ if [ -h $LFS/dev/shm ]
 then
 	mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
-#### Entering In the environment ####
+echo -e "##### Entering Chroot... ####"
 
 chroot "$LFS" /usr/bin/env -i \
-HOME=/root \
-ERROR=/error \
-GREEN='\e[32m' \
-RED='\e[31m' \
-WHITE='\e[0m' \
-TERM="$TERM" \
-PS1='(lfs chroot) \u:\w\$ ' \
-PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-/bin/bash --login +h << "EOZ"
+	HOME=/root \
+	ERROR=/error \
+	GREEN='\e[32m' \
+	RED='\e[31m' \
+	WHITE='\e[0m' \
+	TERM="$TERM" \
+	PS1='(lfs chroot) \u:\w\$ ' \
+	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+	MAKEFLAGS='-j4'
+	/bin/bash << "EOZ"
 
 mkdir -p /{boot,home,mnt,opt,srv}
 mkdir -p /etc/{opt,sysconfig}
@@ -800,6 +799,8 @@ echo "tester:x:101:101::/home/tester:/bin/bash" >> /etc/passwd
 echo "tester:x:101:" >> /etc/group
 install -o tester -d /home/tester
 
+exec /bin/bash
+
 touch /var/log/{btmp,lastlog,faillog,wtmp}
 chgrp -v utmp /var/log/lastlog
 chmod -v 664  /var/log/lastlog
@@ -814,12 +815,10 @@ cd /sources/gcc-10.2.0
 ln -s gthr-posix.h libgcc/gthr-default.h
 mkdir build
 cd build
-../libstdc++-v3/configure \
-	CXXFLAGS="-g -O2 -D_GNU_SOURCE" \
-	--prefix=/usr \
+../libstdc++-v3/configure CXXFLAGS="-g -O2 -D_GNU_SOURCE" --prefix=/usr \
 	--disable-multilib \
 	--disable-nls \
-	--host=$(uname -m)-lfs-linux-gnu \
+	--host=x86_64-lfs-linux-gnu \
 	--disable-libstdcxx-pch > /dev/null 2>> $ERROR
 make > /dev/null 2>> $ERROR
 make install > /dev/null 2>> /error
@@ -976,7 +975,7 @@ rm -rf /usr/share/{info,man,doc}/*
 
 EOZ
 
-#
+##
 ##### cleaning and backup CrossToolchain and Temporary Tools ####
 #
 #umount $LFS/run
