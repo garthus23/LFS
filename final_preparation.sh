@@ -685,7 +685,7 @@ rm -rf "$LFS/sources/gcc-10.2.0"
 
 EOZ
 
-if [[ $? -eq 2 ]]
+if [[ $? -eq 2 ]] || [[ ! -f $LFS/bin/bash ]]
 then
 	exit 2
 fi
