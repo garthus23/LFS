@@ -59,17 +59,6 @@ chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
 
 su - lfs << "EOZ" 
 
-#LC_ALL=POSIX
-#LFS=/mnt/lfs
-#HOME=/home/lfs
-#TERM=xterm-256color
-#LFS_TGT=x86_64-lfs-linux-gnu
-#PATH=$LFS/tools/bin:/bin:/usr/bin
-#CONFIG_SITE=$LFS/usr/share/config.site
-#ERROR=/mnt/lfs/sources/error
-#export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
-#export MAKEFLAGS='-j4'
-
 GREEN='\e[32m'
 RED='\e[31m'
 WHITE='\e[0m'
@@ -89,13 +78,10 @@ if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
 ERROR=/mnt/lfs/sources/error
-MAKEFLAGS='-j4'
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE MAKEFLAGS
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
 EOF
 
 source ~/.bashrc
-
-echo "$LFS $LC_ALL $LFS_TGT $PATH $CONFIG_SITE $MAKEFLAGS"
 
 ##### Binutils-2.36.1 ####
 echo -e "#### Binutils-2.36.1 ####" >> $ERROR
@@ -720,7 +706,6 @@ chroot "$LFS" /usr/bin/env -i \
 	TERM="$TERM" \
 	PS1='(lfs chroot) \u:\w\$ ' \
 	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-	MAKEFLAGS='-j4' \
 	/bin/bash << "EOZ"
 
 mkdir -p /{boot,home,mnt,opt,srv}
