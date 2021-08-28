@@ -811,6 +811,7 @@ echo -e "#### Libstdc++ from GCC-10.2.0 ####" >> $ERROR
 echo -e "Installing Libstdc++ from GCC-10.2.0..."
 tar xf /sources/gcc-10.2.0.tar.xz -C /sources/
 cd /sources/gcc-10.2.0
+ln -s gthr-posix.h libgcc/gthr-default.h
 mkdir build
 cd build
 ../libstdc++-v3/configure \
