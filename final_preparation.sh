@@ -57,7 +57,7 @@ chown lfs $LFS/{usr,lib,lib64,var,etc,bin,sources,sbin,tools}
 
 ############# Building the Cross Compiler #################
 
-su - lfs bash << "EOZ" 
+su - lfs << "EOZ" 
 
 #LC_ALL=POSIX
 #LFS=/mnt/lfs
@@ -94,6 +94,8 @@ export LFS LC_ALL LFS_TGT PATH CONFIG_SITE MAKEFLAGS
 EOF
 
 source ~/.bashrc
+
+echo "$LFS $LC_ALL $LFS_TGT $PATH $CONFIG_SITE $MAKEFLAGS"
 
 ##### Binutils-2.36.1 ####
 echo -e "#### Binutils-2.36.1 ####" >> $ERROR
