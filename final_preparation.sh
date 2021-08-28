@@ -12,7 +12,7 @@ WHITE='\e[0m'
 if [[ $(mount | grep -c "/mnt/lfs") == 0 ]]
 then
 	echo -e "${RED}Error ${WHITE}: The lfs Root partition is not mounted on any directory"
-	exit 1
+	exit 2 
 fi
 echo -e "Disk partitions and filesystem [${GREEN}OK${WHITE}]"
 
@@ -40,7 +40,7 @@ popd > /dev/null
 if [[ $(grep -c ^ $LFS/sources/checksum.txt) > 0 ]]
 then
 	echo -e "${RED}Error ${WHITE}: checksum incorrect"
-	exit 3
+	exit 2
 else
 	echo -e "cheksum [${GREEN}OK${WHITE}]"
 fi
@@ -326,7 +326,7 @@ cd $LFS/sources/bash-5.1
 	--without-bash-malloc > /dev/null 2>> $ERROR
 make > /dev/null 2> $ERROR
 make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-mv -v $LFS/usr/bin/bash $LFS/bin/bash
+mv $LFS/usr/bin/bash $LFS/bin/bash
 ln -sv bash $LFS/bin/sh
 if [[ -f $LFS/bin/bash ]]
 then
@@ -352,13 +352,13 @@ cd $LFS/sources/coreutils-8.32
 	--enable-no-install-program=kill,uptime > /dev/null 2>> $ERROR
 make > /dev/null 2>> $ERROR
 make DESTDIR=$LFS install > /dev/null 2>> $ERROR
-mv -v $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
-mv -v $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
-mv -v $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
-mv -v $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
-mv -v $LFS/usr/bin/chroot $LFS/usr/sbin
+mv $LFS/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $LFS/bin
+mv $LFS/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $LFS/bin
+mv $LFS/usr/bin/{rmdir,stty,sync,true,uname} $LFS/bin
+mv $LFS/usr/bin/{head,nice,sleep,touch} $LFS/bin
+mv $LFS/usr/bin/chroot $LFS/usr/sbin
 mkdir -p $LFS/usr/share/man/man8 
-mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
+mv $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8
 sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8
 if [[ -f $LFS/bin/cat ]]
 then
@@ -718,7 +718,7 @@ chroot "$LFS" /usr/bin/env -i \
 	TERM="$TERM" \
 	PS1='(lfs chroot) \u:\w\$ ' \
 	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-	MAKEFLAGS='-j4'
+	MAKEFLAGS='-j4' \
 	/bin/bash << "EOZ"
 
 mkdir -p /{boot,home,mnt,opt,srv}
@@ -802,9 +802,9 @@ install -o tester -d /home/tester
 exec /bin/bash
 
 touch /var/log/{btmp,lastlog,faillog,wtmp}
-chgrp -v utmp /var/log/lastlog
-chmod -v 664  /var/log/lastlog
-chmod -v 600  /var/log/btmp
+chgrp utmp /var/log/lastlog
+chmod 664  /var/log/lastlog
+chmod 600  /var/log/btmp
 
 #### Libstdc++ from GCC-10.2.0 ####
 
@@ -841,7 +841,7 @@ tar xf /sources/gettext-0.21.tar.xz -C /sources/
 cd /sources/gettext-0.21
 ./configure --disable-shared > /dev/null 2>> $ERROR
 make > /dev/null 2>> $ERROR
-cp -v gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
+cp gettext-tools/src/{msgfmt,msgmerge,xgettext} /usr/bin
 if [[ -f /usr/bin/xgettext ]]
 then
 	echo -e "Gettext installed [${GREEN}OK${WHITE}]"
