@@ -12,7 +12,7 @@ sudo ./check_host_env.sh
 ```
 ## Install sources and temporary tools ##
 
-!! partition ~20go need to be mounted on /mnt/lfs !!
+#### !! partition ~20go need to be mounted on /mnt/lfs
 ```
 sudo ./final_preparation.sh
 ```
@@ -20,5 +20,4 @@ sudo ./final_preparation.sh
 ```
 sudo ./install_lfs_system.sh
 ```
-
-!! compilation Problems : remove/ajust the MAKEFLAGS to your processor capabilities !!
+#### !! compilation Problems : remove/ajust the MAKEFLAGS to your processor capabilities
