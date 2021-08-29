@@ -1,6 +1,6 @@
 # Linux From Scratch
 
-**Shell Scripts to install Linux From Scratch From Ubuntu 18 to x86_64 arch**
+**Shell Scripts to install Linux From Scratch From Ubuntu18(liveCD) to an x86_64 target**
 
 ## Install developpement tools on ubuntu ##
 ```
