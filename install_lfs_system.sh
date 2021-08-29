@@ -5,22 +5,23 @@ LFS=/mnt/lfs
 TERM=xterm-256color
 
 
-### Mount /dev and virtual kernel ###
+### if backup|restore remount virt kernel ###
 
-mount --bind /dev $LFS/dev
-mount --bind /dev/pts $LFS/dev/pts
-mount -t proc proc $LFS/proc
-mount -t sysfs sysfs $LFS/sys
-mount -t tmpfs tmpfs $LFS/run
+#mount --bind /dev $LFS/dev
+#mount --bind /dev/pts $LFS/dev/pts
+#mount -t proc proc $LFS/proc
+#mount -t sysfs sysfs $LFS/sys
+#mount -t tmpfs tmpfs $LFS/run
 
-if [ -h $LFS/dev/shm ]; then
-mkdir -p $LFS/$(readlink $LFS/dev/shm)
-fi
+#if [ -h $LFS/dev/shm ]; then
+#mkdir -p $LFS/$(readlink $LFS/dev/shm)
+#fi
 
 
 chroot "$LFS" /usr/bin/env -i \
 HOME=/root \
 TERM="$TERM" \
+ERROR="/log"
 PS1='(lfs chroot) \u:\w\$ ' \
 GREEN='\e[32m' \
 RED='\e[31m' \
@@ -35,7 +36,7 @@ echo -e "Installing Man-pages-5.10..."
 cd /sources
 tar xf man-pages-5.10.tar.xz -C /sources
 cd man-pages-5.10
-make install >> /log 2>&1
+make install > /dev/null 2> $ERROR
 cd /sources
 rm -rf man-pages-5.10
 echo -e "Manpages installed [${GREEN}OK${WHITE}]"
@@ -61,16 +62,16 @@ sed -e '402a\*result = local->data.services[database_index];' \
 mkdir -v build
 cd build
 ../configure --prefix=/usr \
---disable-werror \
---enable-kernel=3.2 \
---enable-stack-protector=strong \
---with-headers=/usr/include \
-libc_cv_slibdir=/lib >> /log 2>&1
-make >> /log 2>&1
-make check >> /log 2>&1
+	--disable-werror \
+	--enable-kernel=3.2 \
+	--enable-stack-protector=strong \
+	--with-headers=/usr/include \
+	libc_cv_slibdir=/lib > /dev/null 2> $ERROR
+make > /dev/null 2> $ERROR
+make check > /dev/null 2> $ERROR
 touch /etc/ld.so.conf
 sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
-make install >> /log 2>&1
+make install > /dev/null 2> $ERROR
 echo -e "Glibc installed [${GREEN}OK${WHITE}]"
 cp ../nscd/nscd.conf /etc/nscd.conf
 mkdir -p /var/cache/nscd

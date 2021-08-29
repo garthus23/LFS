@@ -78,7 +78,8 @@ if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
 PATH=$LFS/tools/bin:$PATH
 CONFIG_SITE=$LFS/usr/share/config.site
 ERROR=/mnt/lfs/sources/error
-export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+MAKEFLAGS='-j2'
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE MAKEFLAGS
 EOF
 
 source ~/.bashrc
@@ -700,13 +701,14 @@ echo -e "##### Entering Chroot... ####"
 chroot "$LFS" /usr/bin/env -i \
 	HOME=/root \
 	ERROR=/error \
+	MAKEFLAGS='-j2' \
 	GREEN='\e[32m' \
 	RED='\e[31m' \
 	WHITE='\e[0m' \
 	TERM="$TERM" \
 	PS1='(lfs chroot) \u:\w\$ ' \
 	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-	/bin/bash << "EOZ"
+	/bin/bash --login +h << "EOZ"
 
 mkdir -p /{boot,home,mnt,opt,srv}
 mkdir -p /etc/{opt,sysconfig}
