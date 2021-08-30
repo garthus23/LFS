@@ -305,7 +305,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	exit 2
 #fi
 #cd /sources
-#rm -rf Readline-8.1
+#rm -rf readline-8.1
 
 #### M4-1.4.18 ####
 
@@ -348,7 +348,73 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf bc-3.3.0
 
+#### Flex-2.6.4 ####
 
+#echo -e "#### Flex-2.6.4 ####" >> $ERROR
+#echo -e "Installing Flex-2.6.4"
+#tar -xf /sources/flex-2.6.4.tar.gz -C /sources
+#cd /sources/flex-2.6.4
+#./configure --prefix=/usr \
+#	--docdir=/usr/share/doc/flex-2.6.4 \
+#	--disable-static > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#ln -sv flex /usr/bin/lex > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/flex ]]
+#then
+#	echo -e "Flex-2.6.4 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Flex-2.6.4 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf flex-2.6.4
+
+#### Tcl-8.6.11 ####
+
+#echo -e "#### Tcl-8.6.11 ####" >> $ERROR
+#echo -e "Installing Tcl-8.6.11" 
+#tar -xf /sources/tcl8.6.11-src.tar.gz -C /sources
+#cd /sources/tcl8.6.11
+#tar -xf ../tcl8.6.11-html.tar.gz --strip-components=1
+#SRCDIR=$(pwd)
+#cd unix
+#./configure --prefix=/usr \
+#	--mandir=/usr/share/man \
+#	$([ "$(uname -m)" = x86_64 ] && echo --enable-64bit) > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#sed -e "s|$SRCDIR/unix|/usr/lib|" \
+#    -e "s|$SRCDIR|/usr/include|" \
+#    -i tclConfig.sh
+
+#sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.2|/usr/lib/tdbc1.1.2|" \
+#    -e "s|$SRCDIR/pkgs/tdbc1.1.2/generic|/usr/include|" \
+#    -e "s|$SRCDIR/pkgs/tdbc1.1.2/library|/usr/lib/tcl8.6|" \
+#    -e "s|$SRCDIR/pkgs/tdbc1.1.2|/usr/include|" \
+#    -i pkgs/tdbc1.1.2/tdbcConfig.sh
+
+#sed -e "s|$SRCDIR/unix/pkgs/itcl4.2.1|/usr/lib/itcl4.2.1|" \
+#    -e "s|$SRCDIR/pkgs/itcl4.2.1/generic|/usr/include|" \
+#    -e "s|$SRCDIR/pkgs/itcl4.2.1|/usr/include|" \
+#    -i pkgs/itcl4.2.1/itclConfig.sh
+
+#unset SRCDIR
+#make test
+#make install
+#chmod u+w /usr/lib/libtcl8.6.so
+#make install-private-headers
+#ln -sf tclsh8.6 /usr/bin/tclsh
+#mv /usr/share/man/man3/{Thread,Tcl_Thread}.3
+#if [[ -f /usr/bin/tclsh ]]
+#then
+#	echo -e "Tcl-8.6.11 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Tcl-8.6.11 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf tcl8.6.11
 
 EOT
 
