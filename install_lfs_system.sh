@@ -13,17 +13,18 @@ TERM=xterm-256color
 #mount -t sysfs sysfs $LFS/sys
 #mount -t tmpfs tmpfs $LFS/run
 
+echo -e "#### Install basic System ####"
 
 chroot "$LFS" /usr/bin/env -i \
-HOME=/root \
-TERM="$TERM" \
-ERROR="/log" \
-PS1='(lfs chroot) \u:\w\$ ' \
-GREEN='\e[32m' \
-RED='\e[31m' \
-WHITE='\e[0m' \
-PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-/bin/bash --login +h << "EOT"
+	HOME=/root \
+	TERM="$TERM" \
+	ERROR="/log" \
+	PS1='(lfs chroot) \u:\w\$ ' \
+	GREEN='\e[32m' \
+	RED='\e[31m' \
+	WHITE='\e[0m' \
+	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+	/bin/bash --login +h << "EOT"
 
 
 #### Man-pages-5.10 ####
@@ -34,9 +35,15 @@ cd /sources
 tar xf man-pages-5.10.tar.xz -C /sources
 cd man-pages-5.10
 make install > /dev/null 2>> $ERROR
+if [[ -d /usr/share/man/man1 ]]
+then
+	echo -e "Manpages installed [${GREEN}OK${WHITE}]"
+else
+	echo -e "Manpages not installed [${RED}FAILED${WHITE}]"
+	exit 2
+fi
 cd /sources
 rm -rf man-pages-5.10
-echo -e "Manpages installed [${GREEN}OK${WHITE}]"
 
 ##### Iana-Etc-20210202 ####
 #
@@ -230,7 +237,9 @@ echo -e "Manpages installed [${GREEN}OK${WHITE}]"
 #rm -rf file-5.39
 #echo -e "file-5.39 installed [${GREEN}OK${WHITE}]"
 #
-
-
-
 EOT
+
+if [[ $? -eq 2 ]]
+then
+	exit 2
+fi
