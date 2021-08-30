@@ -18,7 +18,7 @@ echo -e "#### Install basic System ####"
 chroot "$LFS" /usr/bin/env -i \
 	HOME=/root \
 	TERM="$TERM" \
-	ERROR="/log" \
+	ERROR="/error" \
 	PS1='(lfs chroot) \u:\w\$ ' \
 	GREEN='\e[32m' \
 	RED='\e[31m' \
@@ -26,25 +26,25 @@ chroot "$LFS" /usr/bin/env -i \
 	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
 	/bin/bash --login +h << "EOT"
 
-
-#### Man-pages-5.10 ####
-
-echo -e "#### Man-pages-5.10 ####" >> $ERROR
-echo -e "Installing Man-pages-5.10..."
-cd /sources
-tar xf man-pages-5.10.tar.xz -C /sources
-cd man-pages-5.10
-make install > /dev/null 2>> $ERROR
-if [[ -d /usr/share/man/man1 ]]
-then
-	echo -e "Manpages installed [${GREEN}OK${WHITE}]"
-else
-	echo -e "Manpages not installed [${RED}FAILED${WHITE}]"
-	exit 2
-fi
-cd /sources
-rm -rf man-pages-5.10
-
+#
+##### Man-pages-5.10 ####
+#
+#echo -e "#### Man-pages-5.10 ####" >> $ERROR
+#echo -e "Installing Man-pages-5.10..."
+#cd /sources
+#tar xf man-pages-5.10.tar.xz -C /sources
+#cd man-pages-5.10
+#make install > /dev/null 2>> $ERROR
+#if [[ -d /usr/share/man/man1 ]]
+#then
+#	echo -e "Manpages installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Manpages not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf man-pages-5.10
+#
 ##### Iana-Etc-20210202 ####
 #
 #echo -e "#### Iana-Etc-20210202 ####" >> $ERROR
@@ -52,9 +52,15 @@ rm -rf man-pages-5.10
 #tar xf iana-etc-20210202.tar.gz -C /sources
 #cd iana-etc-20210202
 #cp services protocols /etc
+#if [[ -f /etc/services ]]
+#then
+#	echo -e "Iana-etc installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Manpages not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd /sources
 #rm -rf iana-etc-20210202
-#echo -e "Iana-etc installed [${GREEN}OK${WHITE}]"
 #
 ##### Glibc-2.33 ####
 #
@@ -78,7 +84,6 @@ rm -rf man-pages-5.10
 #touch /etc/ld.so.conf
 #sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
 #make install > /dev/null 2>> $ERROR
-#echo -e "Glibc installed [${GREEN}OK${WHITE}]"
 #cp ../nscd/nscd.conf /etc/nscd.conf
 #mkdir -p /var/cache/nscd
 #install -v -Dm644 ../nscd/nscd.tmpfiles /usr/lib/tmpfiles.d/nscd.conf
@@ -131,7 +136,7 @@ rm -rf man-pages-5.10
 #	asia australasia backward; do
 #  zic -L /dev/null -d $ZONEINFO ${tz}
 #  zic -L /dev/null -d $ZONEINFO/posix ${tz}
-#  zic -L leapseconds -d $ZONEINFO/right ${tz}
+#  zic -L leapseconds -d $ZONEINFO/right ${tz} 2>> $ERROR
 #done
 #cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
 #zic -d $ZONEINFO -p Europe/Paris
@@ -142,13 +147,18 @@ rm -rf man-pages-5.10
 #/usr/local/lib
 #/opt/lib
 #EOF
+#if [[ -f /usr/bin/tzselect ]]
+#then
+#	echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Glibc-2.33 not installed [${RED}FAILED${WHITE}]"
+#fi
 #cd /sources
 #rm -rf glibc-2.33
-#echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
 #
 #
 ##### Zlib-1.2.11 ####
-#
+
 #echo -e "#### Zlib-1.2.11 ####" >> $ERROR
 #echo -e "Installing Zlib-1.2.11..."
 #tar -xf /sources/zlib-1.2.11.tar.xz -C /sources
@@ -160,10 +170,15 @@ rm -rf man-pages-5.10
 #mv -v /usr/lib/libz.so.* /lib
 #ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
 #rm -fv /usr/lib/libz.a
+#if [[ -f /usr/lib/libz.so ]]
+#then
+#	echo -e "Zlib-1.2.11 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Zlib-1.2.11 not installed [${RED}FAILED${WHITE}]"
+#fi
 #cd /sources
 #rm -rf zlib-1.2.11
-#echo -e "Zlib-1.2.11 installed [${GREEN}OK${WHITE}]"
-#
+
 ##### Bzip2-1.0.8 ####
 #
 #echo -e "#### Bzip2-1.0.8 ####" >> $ERROR
