@@ -400,10 +400,10 @@ chroot "$LFS" /usr/bin/env -i \
 #    -i pkgs/itcl4.2.1/itclConfig.sh
 
 #unset SRCDIR
-#make test
-#make install
+#make test > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
 #chmod u+w /usr/lib/libtcl8.6.so
-#make install-private-headers
+#make install-private-headers > /dev/null 2>> $ERROR
 #ln -sf tclsh8.6 /usr/bin/tclsh
 #mv /usr/share/man/man3/{Thread,Tcl_Thread}.3
 #if [[ -f /usr/bin/tclsh ]]
@@ -415,6 +415,91 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf tcl8.6.11
+
+#### Expect-5.45.4 ####
+
+#echo -e "#### Expect-5.45.4 ####" >> $ERROR
+#echo -e "Installing Expect-5.45.4"
+#tar -xf /sources/expect5.45.4.tar.gz -C /sources
+#cd /sources/expect5.45.4
+#./configure --prefix=/usr \
+#	--with-tcl=/usr/lib \
+#	--enable-shared \
+#	--mandir=/usr/share/man \
+#	--with-tclinclude=/usr/include > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make test > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#ln -sf expect5.45.4/libexpect5.45.4.so /usr/lib
+#if [[ -f /usr/bin/expect ]]
+#then
+#	echo -e "Expect-5.45.4 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Expect-5.45.4 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf expect5.45.4
+
+#### DejaGNU-1.6.2 ####
+
+#echo -e "#### DejaGNU-1.6.2 ####" >> $ERROR
+#echo -e "Installing DejaGNU-1.6.2"
+#tar -xf /sources/dejagnu-1.6.2.tar.gz -C /sources
+#cd /sources/dejagnu-1.6.2
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#makeinfo --html --no-split -o doc/dejagnu.html doc/dejagnu.texi > /dev/null 2>> $ERROR
+#makeinfo --plaintext -o doc/dejagnu.txt doc/dejagnu.texi > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#install -v -dm755 /usr/share/doc/dejagnu-1.6.2
+#install -v -m644 doc/dejagnu.{html,txt} /usr/share/doc/dejagnu-1.6.2
+#make check > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/runtest ]]
+#then
+#	echo -e "DejaGNU-1.6.2 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "DejaGNU-1.6.2 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf /sources/dejagnu-1.6.2
+
+#### Binutils-2.36.1 ####
+
+#echo -e "#### Binutils-2.36.1 ####" >> $ERROR
+#echo -e "Installing Binutils-2.36.1"
+#tar -xf /sources/binutils-2.36.1.tar.xz -C /sources
+#cd /sources/binutils-2.36.1
+#if [[ $(expect -c "spawn ls" | wc -w) == 2 ]]
+#then
+#	echo -e "PTY's [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "PTYs are not working properly [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#sed -i '/@\tincremental_copy/d' gold/testsuite/Makefile.in
+#mkdir -v build
+#cd build
+#../configure --prefix=/usr \
+#	--enable-gold \
+#	--enable-ld=default \
+#	--enable-plugins \
+#	--enable-shared \
+#	--disable-werror \
+#	--enable-64-bit-bfd \
+#	--with-system-zlib > /dev/null 2>> $ERROR
+#make tooldir=/usr > /dev/null 2>> $ERROR
+#make -k check > /dev/null 2>> $ERROR
+#make tooldir=/usr install > /dev/null 2>> $ERROR
+#rm -f /usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.a
+#if [[ -f /usr/bin/dwp ]]
+#then
+#	echo -e "Binutils-2.36.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Binutils-2.36.1 not installed [${RED}FAILED${WHITE}]"
+#fi
+#cd /sources
+#rm -rf binutils-2.36.1
 
 EOT
 
