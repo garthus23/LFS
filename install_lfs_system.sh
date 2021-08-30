@@ -307,6 +307,29 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf Readline-8.1
 
+#### M4-1.4.18 ####
+
+#echo -e "#### M4-1.4.18 ####" >> $ERROR
+#echo -e "Installing M4-1.4.18..." 
+#tar -xf /sources/m4-1.4.18.tar.xz -C /sources
+#cd /sources/m4-1.4.18
+#sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
+#echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/m4 ]]
+#then
+#	echo -e "M4-1.4.18 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "M4-1.4.18 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf m4-1.4.18
+
+
 
 
 EOT
