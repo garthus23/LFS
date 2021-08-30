@@ -152,13 +152,14 @@ chroot "$LFS" /usr/bin/env -i \
 #	echo -e "Glibc-2.33 installed [${GREEN}OK${WHITE}]"
 #else
 #	echo -e "Glibc-2.33 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
 #fi
 #cd /sources
 #rm -rf glibc-2.33
 #
 #
 ##### Zlib-1.2.11 ####
-
+#
 #echo -e "#### Zlib-1.2.11 ####" >> $ERROR
 #echo -e "Installing Zlib-1.2.11..."
 #tar -xf /sources/zlib-1.2.11.tar.xz -C /sources
@@ -175,10 +176,11 @@ chroot "$LFS" /usr/bin/env -i \
 #	echo -e "Zlib-1.2.11 installed [${GREEN}OK${WHITE}]"
 #else
 #	echo -e "Zlib-1.2.11 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
 #fi
 #cd /sources
 #rm -rf zlib-1.2.11
-
+#
 ##### Bzip2-1.0.8 ####
 #
 #echo -e "#### Bzip2-1.0.8 ####" >> $ERROR
@@ -199,9 +201,15 @@ chroot "$LFS" /usr/bin/env -i \
 #ln -sv bzip2 /bin/bunzip2
 #ln -sv bzip2 /bin/bzcat
 #rm -fv /usr/lib/libbz2.a
+#if [[ -f /bin/bzip2 ]]
+#then
+#	echo -e "Bzip2-1.0.8 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Bzip2-1.0.8 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd /sources
 #rm -rf bzip2-1.0.8
-#echo -e "Bzip2-1.0.8 installed [${GREEN}OK${WHITE}]"
 #
 ##### Xz-5.2.5 ####
 #
@@ -210,17 +218,23 @@ chroot "$LFS" /usr/bin/env -i \
 #tar -xf /sources/xz-5.2.5.tar.xz -C /sources
 #cd /sources/xz-5.2.5
 #./configure --prefix=/usr \
-#--disable-static \
-#--docdir=/usr/share/doc/xz-5.2.5 > /dev/null 2>> $ERROR
+#	--disable-static \
+#	--docdir=/usr/share/doc/xz-5.2.5 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make check > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #mv -v /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
 #mv -v /usr/lib/liblzma.so.* /lib
 #ln -svf ../../lib/$(readlink /usr/lib/liblzma.so) /usr/lib/liblzma.so
+#if [[ -f /bin/lzcat ]]
+#then
+#	echo -e "Xz-5.2.5 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Xz-5.2.5 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd /sources
 #rm -rf xz-5.2.5
-#echo -e "Xz-5.2.5 installed [${GREEN}OK${WHITE}]"
 #
 ##### Zstd-1.4.8 ####
 #
@@ -234,9 +248,15 @@ chroot "$LFS" /usr/bin/env -i \
 #rm -v /usr/lib/libzstd.a
 #mv -v /usr/lib/libzstd.so.* /lib
 #ln -sfv ../../lib/$(readlink /usr/lib/libzstd.so) /usr/lib/libzstd.so
+#if [[ -f /usr/bin/zstd ]]
+#then
+#	echo -e "Zstd-1.4.8 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Zstd-1.4.8 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 #cd /sources
 #rm -rf zstd-1.4.8
-#echo -e "Zstd-1.4.8 installed [${GREEN}OK${WHITE}]"
 #
 #### File-5.39 ###
 #
@@ -248,9 +268,14 @@ chroot "$LFS" /usr/bin/env -i \
 #make > /dev/null 2>> $ERROR
 #make check > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/file ]]
+#then
+#	echo -e "file-5.39 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "file-5.39 not installed [${RED}FAILED${WHITE}]"
+#fi
 #cd /sources
 #rm -rf file-5.39
-#echo -e "file-5.39 installed [${GREEN}OK${WHITE}]"
 #
 EOT
 
