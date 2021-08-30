@@ -329,6 +329,24 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf m4-1.4.18
 
+#### Bc-3.3.0 ####
+
+#echo -e "#### Bc-3.3.0 ####" >> $ERROR
+#echo -e "Installing Bc-3.3.0"
+#tar -xf /sources/bc-3.3.0.tar.xz -C /sources
+#cd /sources/bc-3.3.0
+#PREFIX=/usr CC=gcc ./configure.sh -G -O3 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make test > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/bc ]]
+#then
+#	echo -e "Bc-3.3.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Bc-3.3.0 not installed [${RED}FAILED${WHITE}]"
+#fi
+#cd /sources
+#rm -rf bc-3.3.0
 
 
 
