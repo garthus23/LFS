@@ -13,7 +13,7 @@ TERM=xterm-256color
 #mount -t sysfs sysfs $LFS/sys
 #mount -t tmpfs tmpfs $LFS/run
 
-echo -e "#### Install basic System ####"
+#echo -e "#### Install basic System ####"
 
 chroot "$LFS" /usr/bin/env -i \
 	HOME=/root \
@@ -25,7 +25,7 @@ chroot "$LFS" /usr/bin/env -i \
 	WHITE='\e[0m' \
 	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
 	/bin/bash --login +h << "EOT"
-
+#
 #
 ##### Man-pages-5.10 ####
 #
@@ -71,7 +71,7 @@ chroot "$LFS" /usr/bin/env -i \
 #patch -Np1 -i ../glibc-2.33-fhs-1.patch
 #sed -e '402a\	*result = local->data.services[database_index];' \
 #-i nss/nss_database.c
-#mkdir -v build
+#mkdir build
 #cd build
 #../configure --prefix=/usr \
 #	--disable-werror \
@@ -86,8 +86,8 @@ chroot "$LFS" /usr/bin/env -i \
 #make install > /dev/null 2>> $ERROR
 #cp ../nscd/nscd.conf /etc/nscd.conf
 #mkdir -p /var/cache/nscd
-#install -v -Dm644 ../nscd/nscd.tmpfiles /usr/lib/tmpfiles.d/nscd.conf
-#install -v -Dm644 ../nscd/nscd.service /lib/systemd/system/nscd.service
+#install -Dm644 ../nscd/nscd.tmpfiles /usr/lib/tmpfiles.d/nscd.conf
+#install -Dm644 ../nscd/nscd.service /lib/systemd/system/nscd.service
 #mkdir -p /usr/lib/locale
 #localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
 #localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
@@ -138,7 +138,7 @@ chroot "$LFS" /usr/bin/env -i \
 #  zic -L /dev/null -d $ZONEINFO/posix ${tz}
 #  zic -L leapseconds -d $ZONEINFO/right ${tz} 2>> $ERROR
 #done
-#cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
+#cp zone.tab zone1970.tab iso3166.tab $ZONEINFO
 #zic -d $ZONEINFO -p Europe/Paris
 #unset ZONEINFO
 #ln -sfv /usr/share/zoneinfo/Europe/Paris /etc/localtime
@@ -168,7 +168,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make > /dev/null 2>> $ERROR
 #make check > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
-#mv -v /usr/lib/libz.so.* /lib
+#mv /usr/lib/libz.so.* /lib
 #ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
 #rm -fv /usr/lib/libz.a
 #if [[ -f /usr/lib/libz.so ]]
@@ -194,13 +194,13 @@ chroot "$LFS" /usr/bin/env -i \
 #make clean  > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make PREFIX=/usr install > /dev/null 2>> $ERROR
-#cp -v bzip2-shared /bin/bzip2
-#cp -av libbz2.so* /lib
-#ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
-#rm -v /usr/bin/{bunzip2,bzcat,bzip2}
-#ln -sv bzip2 /bin/bunzip2
-#ln -sv bzip2 /bin/bzcat
-#rm -fv /usr/lib/libbz2.a
+#cp bzip2-shared /bin/bzip2
+#cp -a libbz2.so* /lib
+#ln -s ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
+#rm /usr/bin/{bunzip2,bzcat,bzip2}
+#ln -s bzip2 /bin/bunzip2
+#ln -s bzip2 /bin/bzcat
+#rm -f /usr/lib/libbz2.a
 #if [[ -f /bin/bzip2 ]]
 #then
 #	echo -e "Bzip2-1.0.8 installed [${GREEN}OK${WHITE}]"
@@ -223,9 +223,9 @@ chroot "$LFS" /usr/bin/env -i \
 #make > /dev/null 2>> $ERROR
 #make check > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
-#mv -v /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
-#mv -v /usr/lib/liblzma.so.* /lib
-#ln -svf ../../lib/$(readlink /usr/lib/liblzma.so) /usr/lib/liblzma.so
+#mv /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
+#mv /usr/lib/liblzma.so.* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/liblzma.so) /usr/lib/liblzma.so
 #if [[ -f /bin/lzcat ]]
 #then
 #	echo -e "Xz-5.2.5 installed [${GREEN}OK${WHITE}]"
@@ -245,9 +245,9 @@ chroot "$LFS" /usr/bin/env -i \
 #make > /dev/null 2>> $ERROR
 #make check > /dev/null 2>> $ERROR
 #make prefix=/usr install > /dev/null 2>> $ERROR
-#rm -v /usr/lib/libzstd.a
-#mv -v /usr/lib/libzstd.so.* /lib
-#ln -sfv ../../lib/$(readlink /usr/lib/libzstd.so) /usr/lib/libzstd.so
+#rm /usr/lib/libzstd.a
+#mv /usr/lib/libzstd.so.* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/libzstd.so) /usr/lib/libzstd.so
 #if [[ -f /usr/bin/zstd ]]
 #then
 #	echo -e "Zstd-1.4.8 installed [${GREEN}OK${WHITE}]"
@@ -258,7 +258,7 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf zstd-1.4.8
 #
-#### File-5.39 ###
+##### File-5.39 ####
 #
 #echo -e "#### File-5.39 ####" >> $ERROR
 #echo -e "Installing File-5.39..."
@@ -273,10 +273,42 @@ chroot "$LFS" /usr/bin/env -i \
 #	echo -e "file-5.39 installed [${GREEN}OK${WHITE}]"
 #else
 #	echo -e "file-5.39 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
 #fi
 #cd /sources
 #rm -rf file-5.39
 #
+
+#### Readline-8.1 ####
+
+#echo -e "#### Readline-8.1 ####" >> $ERROR
+#echo -e "Installing Readline-8.1..."
+#tar -xf /sources/readline-8.1.tar.gz -C /sources
+#cd /sources/readline-8.1
+#sed -i '/MV.*old/d' Makefile.in
+#sed -i '/{OLDSUFF}/c:' support/shlib-install
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--with-curses \
+#	--docdir=/usr/share/doc/readline-8.1 > /dev/null 2>> $ERROR
+#make SHLIB_LIBS="-lncursesw" > /dev/null 2>> $ERROR
+#make SHLIB_LIBS="-lncursesw" install > /dev/null 2>> $ERROR
+#mv /usr/lib/lib{readline,history}.so.* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/libreadline.so) /usr/lib/libreadline.so
+#ln -sf ../../lib/$(readlink /usr/lib/libhistory.so ) /usr/lib/libhistory.so
+#install -m644 doc/*.{ps,pdf,html,dvi} /usr/share/doc/readline-8.1
+#if [[ -f /usr/lib/libreadline.so ]]
+#then
+#	echo -e "Readline-8.1 installed [${GREEN}OK${WHITE}]" 
+#else
+#	echo -e "Readline-8.1 not installed [${RED}FAILED${WHITE}]" 
+#	exit 2
+#fi
+#cd /sources
+#rm -rf Readline-8.1
+
+
+
 EOT
 
 if [[ $? -eq 2 ]]
