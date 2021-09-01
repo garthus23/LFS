@@ -278,9 +278,9 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf file-5.39
 #
-
+#
 #### Readline-8.1 ####
-
+#
 #echo -e "#### Readline-8.1 ####" >> $ERROR
 #echo -e "Installing Readline-8.1..."
 #tar -xf /sources/readline-8.1.tar.gz -C /sources
@@ -306,9 +306,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf readline-8.1
-
+#
 #### M4-1.4.18 ####
-
+#
 #echo -e "#### M4-1.4.18 ####" >> $ERROR
 #echo -e "Installing M4-1.4.18..." 
 #tar -xf /sources/m4-1.4.18.tar.xz -C /sources
@@ -328,9 +328,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf m4-1.4.18
-
+#
 #### Bc-3.3.0 ####
-
+#
 #echo -e "#### Bc-3.3.0 ####" >> $ERROR
 #echo -e "Installing Bc-3.3.0"
 #tar -xf /sources/bc-3.3.0.tar.xz -C /sources
@@ -347,9 +347,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf bc-3.3.0
-
+#
 #### Flex-2.6.4 ####
-
+#
 #echo -e "#### Flex-2.6.4 ####" >> $ERROR
 #echo -e "Installing Flex-2.6.4"
 #tar -xf /sources/flex-2.6.4.tar.gz -C /sources
@@ -370,9 +370,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf flex-2.6.4
-
+#
 #### Tcl-8.6.11 ####
-
+#
 #echo -e "#### Tcl-8.6.11 ####" >> $ERROR
 #echo -e "Installing Tcl-8.6.11" 
 #tar -xf /sources/tcl8.6.11-src.tar.gz -C /sources
@@ -387,18 +387,18 @@ chroot "$LFS" /usr/bin/env -i \
 #sed -e "s|$SRCDIR/unix|/usr/lib|" \
 #    -e "s|$SRCDIR|/usr/include|" \
 #    -i tclConfig.sh
-
+#
 #sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.2|/usr/lib/tdbc1.1.2|" \
 #    -e "s|$SRCDIR/pkgs/tdbc1.1.2/generic|/usr/include|" \
 #    -e "s|$SRCDIR/pkgs/tdbc1.1.2/library|/usr/lib/tcl8.6|" \
 #    -e "s|$SRCDIR/pkgs/tdbc1.1.2|/usr/include|" \
 #    -i pkgs/tdbc1.1.2/tdbcConfig.sh
-
+#
 #sed -e "s|$SRCDIR/unix/pkgs/itcl4.2.1|/usr/lib/itcl4.2.1|" \
 #    -e "s|$SRCDIR/pkgs/itcl4.2.1/generic|/usr/include|" \
 #    -e "s|$SRCDIR/pkgs/itcl4.2.1|/usr/include|" \
 #    -i pkgs/itcl4.2.1/itclConfig.sh
-
+#
 #unset SRCDIR
 #make test > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
@@ -415,9 +415,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf tcl8.6.11
-
+#
 #### Expect-5.45.4 ####
-
+#
 #echo -e "#### Expect-5.45.4 ####" >> $ERROR
 #echo -e "Installing Expect-5.45.4"
 #tar -xf /sources/expect5.45.4.tar.gz -C /sources
@@ -440,9 +440,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf expect5.45.4
-
+#
 #### DejaGNU-1.6.2 ####
-
+#
 #echo -e "#### DejaGNU-1.6.2 ####" >> $ERROR
 #echo -e "Installing DejaGNU-1.6.2"
 #tar -xf /sources/dejagnu-1.6.2.tar.gz -C /sources
@@ -463,9 +463,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf /sources/dejagnu-1.6.2
-
+#
 #### Binutils-2.36.1 ####
-
+#
 #echo -e "#### Binutils-2.36.1 ####" >> $ERROR
 #echo -e "Installing Binutils-2.36.1"
 #tar -xf /sources/binutils-2.36.1.tar.xz -C /sources
@@ -500,9 +500,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf binutils-2.36.1
-
+#
 #### GMP-6.2.1 ####
-
+#
 #echo -e "#### GMP-6.2.1 ####" >> $ERROR
 #echo -e "Installing GMP-6.2.1"
 #tar xf /sources/gmp-6.2.1.tar.xz -C /sources
@@ -534,9 +534,9 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf gmp-6.2.1
-
+#
 #### MPFR-4.1.0 ####
-
+#
 #echo -e "#### MPFR-4.1.0 ####" >> $ERROR
 #echo -e "Installing MPFR-4.1.0..."
 #tar xf /sources/mpfr-4.1.0.tar.xz -C /sources
@@ -559,6 +559,137 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf mpfr-4.1.0
+#
+#### MPC-1.2.1 ####
+#
+#echo -e "#### MPC-1.2.1 ####" >> $ERROR
+#echo -e "Installing MPC-1.2.1"
+#tar xf /sources/mpc-1.2.1.tar.gz -C /sources
+#cd /sources/mpc-1.2.1
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--docdir=/usr/share/doc/mpc-1.2.1 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make html > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#make install-html > /dev/null 2>> $ERROR
+#if [[ -f $LFS/usr/lib/libmpc.so ]]
+#then
+#	echo -e "MPC-1.2.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "MPC-1.2.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf mpc-1.2.1
+#
+#### Attr-2.4.48 ####
+#
+#echo -e "#### Attr-2.4.48 ####" >> $ERROR
+#echo -e "Installing Attr-2.4.48..."
+#tar xf /sources/attr-2.4.48.tar.gz -C /sources
+#cd /sources/attr-2.4.48
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--sysconfdir=/etc \
+#	--docdir=/usr/share/doc/attr-2.4.48 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/lib/libattr.so.* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/libattr.so) /usr/lib/libattr.so
+#if [[ -f $LFS/usr/bin/attr ]]
+#then
+#	echo -e "Attr-2.4.48 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Attr-2.4.48 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf attr-2.4.48
+#
+##### Acl-2.2.53 ####
+#
+#echo -e "#### Acl-2.2.53 ####" >> $ERROR
+#echo -e "Installing Acl-2.2.53..."
+#tar xf /sources/acl-2.2.53.tar.gz -C /sources
+#cd /sources/acl-2.2.53
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--libexecdir=/usr/lib \
+#	--docdir=/usr/share/doc/acl-2.2.53 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/lib/libacl.so.* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/libacl.so) /usr/lib/libacl.so
+#if [[ -f $LFS/usr/bin/chacl ]]
+#then
+#	echo -e "Acl-2.2.53 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Acl-2.2.53 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf acl-2.2.53
+
+#### Libcap-2.48 ####
+
+#echo -e "#### Libcap-2.48 ####" >> $ERROR
+#echo -e "Installing Libcap-2.48..."
+#tar xf /sources/libcap-2.48.tar.xz -C /sources
+#cd /sources/libcap-2.48
+#sed -i '/install -m.*STA/d' libcap/Makefile
+#make prefix=/usr lib=lib > /dev/null 2>> $ERROR
+#make test > /dev/null 2>> $ERROR
+#make prefix=/usr lib=lib install > /dev/null 2>> $ERROR
+#for libname in cap psx; do
+#	mv /usr/lib/lib${libname}.so.* /lib
+#	ln -sf ../../lib/lib${libname}.so.2 /usr/lib/lib${libname}.so
+#	chmod 755 /lib/lib${libname}.so.2.48
+#done
+#if [[ -f $LFS/usr/sbin/getcap ]]
+#then
+#	echo -e "Libcap-2.48 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Libcap-2.48 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf libcap-2.48
+
+#### Shadow-4.8.1 ####
+
+#echo -e "#### Shadow-4.8.1 ####" >> $ERROR
+#echo -e "Installing Shadow-4.8.1"
+#tar xf /sources/shadow-4.8.1.tar.xz -C /sources
+#cd /sources/shadow-4.8.1
+#sed -i 's/groups$(EXEEXT) //' src/Makefile.in
+#find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
+#find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
+#find man -name Makefile.in -exec sed -i 's/passwd\.5 / /' {} \;
+#sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD SHA512:' \
+#    -e 's:/var/spool/mail:/var/mail:' \
+#    -i etc/login.defs
+#sed -i 's:DICTPATH.*:DICTPATH\t/lib/cracklib/pw_dict:' etc/login.defs
+#sed -i 's/1000/999/' etc/useradd
+#touch /usr/bin/passwd
+#./configure --sysconfdir=/etc \
+#	--with-group-name-max-length=32 \
+#	--with-libcrack > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#pwconv
+#grpconv
+######passwd root ### if want to define the root password in interactive
+#echo "root:rootpassword" | chpasswd
+#if [[ -f $LFS/usr/bin/chage ]]
+#then
+#	echo -e "Shadow-4.8.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Shadow-4.8.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
 
 EOT
 
