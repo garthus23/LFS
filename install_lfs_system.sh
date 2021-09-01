@@ -535,6 +535,31 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf gmp-6.2.1
 
+#### MPFR-4.1.0 ####
+
+#echo -e "#### MPFR-4.1.0 ####" >> $ERROR
+#echo -e "Installing MPFR-4.1.0..."
+#tar xf /sources/mpfr-4.1.0.tar.xz -C /sources
+#cd /sources/mpfr-4.1.0
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--enable-thread-safe \
+#	--docdir=/usr/share/doc/mpfr-4.1.0 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make html > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#make install-html > /dev/null 2>> $ERROR
+#if [[ -f $LFS/usr/lib/libmpfr.so ]]
+#then
+#	echo -e "MPFR-4.1.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "MPFR-4.1.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf mpfr-4.1.0
+
 EOT
 
 if [[ $? -eq 2 ]]
