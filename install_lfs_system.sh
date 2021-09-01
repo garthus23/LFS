@@ -13,7 +13,7 @@ TERM=xterm-256color
 #mount -t sysfs sysfs $LFS/sys
 #mount -t tmpfs tmpfs $LFS/run
 
-#echo -e "#### Install basic System ####"
+echo -e "#### Install basic System ####"
 
 chroot "$LFS" /usr/bin/env -i \
 	HOME=/root \
@@ -500,6 +500,40 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf binutils-2.36.1
+
+#### GMP-6.2.1 ####
+
+#echo -e "#### GMP-6.2.1 ####" >> $ERROR
+#echo -e "Installing GMP-6.2.1"
+#tar xf /sources/gmp-6.2.1.tar.xz -C /sources
+#cd /sources/gmp-6.2.1
+#cp -v configfsf.guess config.guess
+#cp -v configfsf.sub config.sub
+#./configure --prefix=/usr \
+#	--enable-cxx \
+#	--disable-static \
+#	--docdir=/usr/share/doc/gmp-6.2.1 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make html > /dev/null 2>> $ERROR
+#make check 2>&1 | tee gmp-check-log > /dev/null 2>> $ERROR
+#if [[ $(awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log) == '197' ]]
+#then
+#	echo -e "make test [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "make test  [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#make install > /dev/null 2>> $ERROR
+#make install-html > /dev/null 2>> $ERROR
+#if [[ -f $LFS/usr/lib/libgmp.so ]]
+#then
+#	echo -e "GMP-6.2.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "GMP-6.2.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf gmp-6.2.1
 
 EOT
 
