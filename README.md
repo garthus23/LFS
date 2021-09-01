@@ -21,4 +21,4 @@ sudo ./final_preparation.sh
 sudo ./install_lfs_system.sh
 ```
 #### !! compilation Problems : remove/ajust the MAKEFLAGS to your processor capabilities
-#### !! root password : default: "rootpassword" - can be define line 688 
+#### !! root password : default: "rootpassword" - can be defined line 685 in install_lfs_system.sh 
