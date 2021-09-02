@@ -525,7 +525,7 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #make install > /dev/null 2>> $ERROR
 #make install-html > /dev/null 2>> $ERROR
-#if [[ -f $LFS/usr/lib/libgmp.so ]]
+#if [[ -f /usr/lib/libgmp.so ]]
 #then
 #	echo -e "GMP-6.2.1 installed [${GREEN}OK${WHITE}]"
 #else
@@ -550,7 +550,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make check > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #make install-html > /dev/null 2>> $ERROR
-#if [[ -f $LFS/usr/lib/libmpfr.so ]]
+#if [[ -f /usr/lib/libmpfr.so ]]
 #then
 #	echo -e "MPFR-4.1.0 installed [${GREEN}OK${WHITE}]"
 #else
@@ -574,7 +574,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make check > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #make install-html > /dev/null 2>> $ERROR
-#if [[ -f $LFS/usr/lib/libmpc.so ]]
+#if [[ -f /usr/lib/libmpc.so ]]
 #then
 #	echo -e "MPC-1.2.1 installed [${GREEN}OK${WHITE}]"
 #else
@@ -599,7 +599,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make install > /dev/null 2>> $ERROR
 #mv /usr/lib/libattr.so.* /lib
 #ln -sf ../../lib/$(readlink /usr/lib/libattr.so) /usr/lib/libattr.so
-#if [[ -f $LFS/usr/bin/attr ]]
+#if [[ -f /usr/bin/attr ]]
 #then
 #	echo -e "Attr-2.4.48 installed [${GREEN}OK${WHITE}]"
 #else
@@ -623,7 +623,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make install > /dev/null 2>> $ERROR
 #mv /usr/lib/libacl.so.* /lib
 #ln -sf ../../lib/$(readlink /usr/lib/libacl.so) /usr/lib/libacl.so
-#if [[ -f $LFS/usr/bin/chacl ]]
+#if [[ -f /usr/bin/chacl ]]
 #then
 #	echo -e "Acl-2.2.53 installed [${GREEN}OK${WHITE}]"
 #else
@@ -648,7 +648,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	ln -sf ../../lib/lib${libname}.so.2 /usr/lib/lib${libname}.so
 #	chmod 755 /lib/lib${libname}.so.2.48
 #done
-#if [[ -f $LFS/usr/sbin/getcap ]]
+#if [[ -f /usr/sbin/getcap ]]
 #then
 #	echo -e "Libcap-2.48 installed [${GREEN}OK${WHITE}]"
 #else
@@ -683,7 +683,7 @@ chroot "$LFS" /usr/bin/env -i \
 #grpconv
 ######passwd root ### if want to define the root password in interactive
 #echo "root:rootpassword" | chpasswd
-#if [[ -f $LFS/usr/bin/chage ]]
+#if [[ -f /usr/bin/chage ]]
 #then
 #	echo -e "Shadow-4.8.1 installed [${GREEN}OK${WHITE}]"
 #else
@@ -749,7 +749,7 @@ chroot "$LFS" /usr/bin/env -i \
 #rm dummy.c a.out dummy.log
 #mkdir -p /usr/share/gdb/auto-load/usr/lib
 #mv /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
-#if [[ -f $LFS/usr/bin/gcc ]]
+#if [[ -f /usr/bin/gcc ]]
 #then
 #	echo -e "GCC-10.2.0 installed [${GREEN}OK${WHITE}]"
 #else
@@ -758,6 +758,67 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf gcc-10.2.0
+
+##### Pkg-config-0.29.2 ####
+
+#echo -e "#### Pkg-config-0.29.2 ####" >> $ERROR
+#echo -e "Installing Pkg-config-0.29.2"
+#tar xf /sources/pkg-config-0.29.2.tar.gz -C /sources
+#cd /sources/pkg-config-0.29.2
+#./configure --prefix=/usr \
+#	--with-internal-glib \
+#	--disable-host-tool \
+#	--docdir=/usr/share/doc/pkg-config-0.29.2 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/pkg-config ]]
+#then
+#	echo -e "Pkg-config-0.29.2 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Pkg-config-0.29.2 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf pkg-config-0.29.2
+
+#### Ncurses-6.2 ####
+
+#echo -e "#### Ncurses-6.2 ####" >> $ERROR
+#echo -e "Installing Ncurses-6.2"
+#tar xf /sources/ncurses-6.2.tar.gz -C /sources
+#cd /sources/ncurses-6.2
+#./configure --prefix=/usr \
+#	--mandir=/usr/share/man \
+#	--with-shared \
+#	--without-debug \
+#	--without-normal \
+#	--enable-pc-files \
+#	--enable-widec > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/lib/libncursesw.so.6* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/libncursesw.so) /usr/lib/libncursesw.so
+#for lib in ncurses form panel menu ; do
+#	rm -f /usr/lib/lib${lib}.so
+#	echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
+#	ln -sf ${lib}w.pc /usr/lib/pkgconfig/${lib}.pc
+#done
+#rm -f /usr/lib/libcursesw.so
+#echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
+#ln -sf libncurses.so /usr/lib/libcurses.so
+#rm -f /usr/lib/libncurses++w.a
+#mkdir /usr/share/doc/ncurses-6.2
+#cp -R doc/* /usr/share/doc/ncurses-6.2
+#if [[ -f /usr/bin/clear ]]
+#then
+#	echo -e "Ncurses-6.2 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Ncurses-6.2 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf ncurses-6.2
 
 EOT
 
