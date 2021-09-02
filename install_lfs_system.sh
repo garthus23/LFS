@@ -690,6 +690,74 @@ chroot "$LFS" /usr/bin/env -i \
 #	echo -e "Shadow-4.8.1 not installed [${RED}FAILED${WHITE}]"
 #	exit 2
 #fi
+#cd /sources
+#rm -rf shadow-4.8.1
+#
+#
+###### GCC-10.2.0 ####
+#
+#echo -e "#### GCC-10.2.0 ####" >> $ERROR
+#echo -e "Installing GCC-10.2.0"
+#tar xf /sources/gcc-10.2.0.tar.xz -C /sources
+#cd /sources/gcc-10.2.0
+#case $(uname -m) in
+#  x86_64)
+#    sed -e '/m64=/s/lib64/lib/' \
+#        -i.orig gcc/config/i386/t-linux64
+#;;
+#esac
+#mkdir build
+#cd build
+#../configure --prefix=/usr \
+#	LD=ld \
+#	--enable-languages=c,c++ \
+#	--disable-multilib \
+#	--disable-bootstrap \
+#	--with-system-zlib > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#ulimit -s 32768
+#chown -Rv tester .
+#su tester -c "PATH=$PATH make -k check" > /dev/null 2>> $ERROR
+#for i in $(../contrib/test_summary | grep "unexpected failure" | grep -o '[0-9].*')
+#do
+#	if [[ $i -gt 100 ]]
+#	then
+#		echo -e "too many errors on tests [${RED}FAILED${WHITE}]"
+#		exit 2
+#	fi
+#done
+#make install > /dev/null 2>> $ERROR
+#rm -rf /usr/lib/gcc/$(gcc -dumpmachine)/10.2.0/include-fixed/bits/
+#chown -R root:root \
+#	/usr/lib/gcc/*linux-gnu/10.2.0/include{,-fixed}
+#ln -s ../usr/bin/cpp /lib
+#ln -sf ../../libexec/gcc/$(gcc -dumpmachine)/10.2.0/liblto_plugin.so \
+#	/usr/lib/bfd-plugins/
+#echo 'int main(){}' > dummy.c
+#cc dummy.c -v -Wl,--verbose &> dummy.log
+#if [[ $? -ne 0 ]]
+#then
+#	echo -e "Compiler Doesn't work [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#readelf -l a.out | grep ': /lib'
+#grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+#grep -B4 '^ /usr/include' dummy.log
+#grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+#grep "/lib.*/libc.so.6 " dummy.log
+#grep found dummy.log
+#rm dummy.c a.out dummy.log
+#mkdir -p /usr/share/gdb/auto-load/usr/lib
+#mv /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
+#if [[ -f $LFS/usr/bin/gcc ]]
+#then
+#	echo -e "GCC-10.2.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "GCC-10.2.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf gcc-10.2.0
 
 EOT
 
