@@ -820,6 +820,73 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf ncurses-6.2
 
+#### Sed-4.8 ####
+
+#echo -e "#### Sed-4.8 ####" >> $ERROR
+#echo -e "Installing Sed-4.8"
+#tar xf /sources/sed-4.8.tar.xz -C /sources
+#cd /sources/sed-4.8
+#./configure --prefix=/usr --bindir=/bin > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make html > /dev/null 2>> $ERROR
+#chown -R tester .
+#su tester -c "PATH=$PATH make check" > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#install -d -m755 /usr/share/doc/sed-4.8
+#install -m644 doc/sed.html /usr/share/doc/sed-4.8
+#if [[ -f /bin/sed ]]
+#then
+#	echo -e "Sed-4.8 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Sed-4.8 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf sed-4.8
+
+#### Psmisc-23.4 ####
+
+#echo -e "#### Psmisc-23.4 ####" >> $ERROR
+#echo -e "Installing Psmisc-23.4"
+#tar xf /sources/psmisc-23.4.tar.xz -C /sources
+#cd /sources/psmisc-23.4
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/bin/fuser /bin
+#mv /usr/bin/killall /bin
+#if [[ -f /bin/fuser ]]
+#then
+#	echo -e "Psmisc-23.4 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Psmisc-23.4 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf psmisc-23.4
+
+#### Gettext-0.21 ####
+
+#echo -e "#### Gettext-0.21 ####" >> $ERROR
+#echo -e "Installing Gettext-0.21"
+#tar xf /sources/gettext-0.21.tar.xz -C /sources
+#cd /sources/gettext-0.21
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--docdir=/usr/share/doc/gettext-0.21 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#chmod 0755 /usr/lib/preloadable_libintl.so
+#if [[ -f /usr/bin/gettext ]]
+#then
+#	echo -e "Gettext-0.21 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Gettext-0.21 not installed [${RED}FAILED${WHITE}]"
+#fi
+#cd /sources
+#rm -rf gettext-0.21
+
 EOT
 
 if [[ $? -eq 2 ]]
