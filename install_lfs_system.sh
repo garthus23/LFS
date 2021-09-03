@@ -19,6 +19,7 @@ chroot "$LFS" /usr/bin/env -i \
 	HOME=/root \
 	TERM="$TERM" \
 	ERROR="/error" \
+	CHECK="/make_check" \
 	PS1='(lfs chroot) \u:\w\$ ' \
 	GREEN='\e[32m' \
 	RED='\e[31m' \
@@ -166,7 +167,7 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources/zlib-1.2.11
 #./configure --prefix=/usr > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #mv /usr/lib/libz.so.* /lib
 #ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
@@ -221,7 +222,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--disable-static \
 #	--docdir=/usr/share/doc/xz-5.2.5 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #mv /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
 #mv /usr/lib/liblzma.so.* /lib
@@ -238,12 +239,12 @@ chroot "$LFS" /usr/bin/env -i \
 #
 ##### Zstd-1.4.8 ####
 #
-#echo -e "#### Zstd-1.4.8 ####" >> $ERROR
+#echo -e "#### Zstd-1.4.8 ####" >> $ERROR 
 #echo -e "Installing Zstd-1.4.8..."
 #tar -xf /sources/zstd-1.4.8.tar.gz -C /sources
 #cd /sources/zstd-1.4.8
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make prefix=/usr install > /dev/null 2>> $ERROR
 #rm /usr/lib/libzstd.a
 #mv /usr/lib/libzstd.so.* /lib
@@ -260,13 +261,13 @@ chroot "$LFS" /usr/bin/env -i \
 #
 ##### File-5.39 ####
 #
-#echo -e "#### File-5.39 ####" >> $ERROR
+#echo -e "#### File-5.39 ####" >> $ERROR 
 #echo -e "Installing File-5.39..."
 #tar -xf /sources/file-5.39.tar.gz -C /sources
 #cd /sources/file-5.39
 #./configure --prefix=/usr > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #if [[ -f /usr/bin/file ]]
 #then
@@ -317,7 +318,7 @@ chroot "$LFS" /usr/bin/env -i \
 #echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
 #./configure --prefix=/usr > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #if [[ -f /usr/bin/m4 ]]
 #then
@@ -337,7 +338,7 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources/bc-3.3.0
 #PREFIX=/usr CC=gcc ./configure.sh -G -O3 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make test > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #if [[ -f /usr/bin/bc ]]
 #then
@@ -358,7 +359,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--docdir=/usr/share/doc/flex-2.6.4 \
 #	--disable-static > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #ln -sv flex /usr/bin/lex > /dev/null 2>> $ERROR
 #if [[ -f /usr/bin/flex ]]
@@ -400,7 +401,7 @@ chroot "$LFS" /usr/bin/env -i \
 #    -i pkgs/itcl4.2.1/itclConfig.sh
 #
 #unset SRCDIR
-#make test > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #chmod u+w /usr/lib/libtcl8.6.so
 #make install-private-headers > /dev/null 2>> $ERROR
@@ -428,7 +429,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--mandir=/usr/share/man \
 #	--with-tclinclude=/usr/include > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make test > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #ln -sf expect5.45.4/libexpect5.45.4.so /usr/lib
 #if [[ -f /usr/bin/expect ]]
@@ -453,7 +454,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make install > /dev/null 2>> $ERROR
 #install -v -dm755 /usr/share/doc/dejagnu-1.6.2
 #install -v -m644 doc/dejagnu.{html,txt} /usr/share/doc/dejagnu-1.6.2
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #if [[ -f /usr/bin/runtest ]]
 #then
 #	echo -e "DejaGNU-1.6.2 installed [${GREEN}OK${WHITE}]"
@@ -489,7 +490,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--enable-64-bit-bfd \
 #	--with-system-zlib > /dev/null 2>> $ERROR
 #make tooldir=/usr > /dev/null 2>> $ERROR
-#make -k check > /dev/null 2>> $ERROR
+#make -k check >> $CHECK 2>> $ERROR
 #make tooldir=/usr install > /dev/null 2>> $ERROR
 #rm -f /usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.a
 #if [[ -f /usr/bin/dwp ]]
@@ -515,7 +516,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--docdir=/usr/share/doc/gmp-6.2.1 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make html > /dev/null 2>> $ERROR
-#make check 2>&1 | tee gmp-check-log > /dev/null 2>> $ERROR
+#make check 2>&1 | tee gmp-check-log >> $CHECK 2>> $ERROR
 #if [[ $(awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log) == '197' ]]
 #then
 #	echo -e "make test [${GREEN}OK${WHITE}]"
@@ -547,7 +548,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--docdir=/usr/share/doc/mpfr-4.1.0 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make html > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #make install-html > /dev/null 2>> $ERROR
 #if [[ -f /usr/lib/libmpfr.so ]]
@@ -571,7 +572,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--docdir=/usr/share/doc/mpc-1.2.1 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
 #make html > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #make install-html > /dev/null 2>> $ERROR
 #if [[ -f /usr/lib/libmpc.so ]]
@@ -594,7 +595,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--disable-static \
 #	--sysconfdir=/etc \
 #	--docdir=/usr/share/doc/attr-2.4.48 > /dev/null 2>> $ERROR
-#make > /dev/null 2>> $ERROR
+#make >> $CHECK 2>> $ERROR
 #make check > /dev/null 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #mv /usr/lib/libattr.so.* /lib
@@ -641,7 +642,7 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources/libcap-2.48
 #sed -i '/install -m.*STA/d' libcap/Makefile
 #make prefix=/usr lib=lib > /dev/null 2>> $ERROR
-#make test > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
 #make prefix=/usr lib=lib install > /dev/null 2>> $ERROR
 #for libname in cap psx; do
 #	mv /usr/lib/lib${libname}.so.* /lib
@@ -717,7 +718,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make > /dev/null 2>> $ERROR
 #ulimit -s 32768
 #chown -Rv tester .
-#su tester -c "PATH=$PATH make -k check" > /dev/null 2>> $ERROR
+#su tester -c "PATH=$PATH make -k check" >> $CHECK 2>> $ERROR
 #for i in $(../contrib/test_summary | grep "unexpected failure" | grep -o '[0-9].*')
 #do
 #	if [[ $i -gt 100 ]]
@@ -770,7 +771,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--disable-host-tool \
 #	--docdir=/usr/share/doc/pkg-config-0.29.2 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #if [[ -f /usr/bin/pkg-config ]]
 #then
@@ -830,7 +831,7 @@ chroot "$LFS" /usr/bin/env -i \
 #make > /dev/null 2>> $ERROR
 #make html > /dev/null 2>> $ERROR
 #chown -R tester .
-#su tester -c "PATH=$PATH make check" > /dev/null 2>> $ERROR
+#su tester -c "PATH=$PATH make check" >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #install -d -m755 /usr/share/doc/sed-4.8
 #install -m644 doc/sed.html /usr/share/doc/sed-4.8
@@ -875,7 +876,7 @@ chroot "$LFS" /usr/bin/env -i \
 #	--disable-static \
 #	--docdir=/usr/share/doc/gettext-0.21 > /dev/null 2>> $ERROR
 #make > /dev/null 2>> $ERROR
-#make check > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
 #make install > /dev/null 2>> $ERROR
 #chmod 0755 /usr/lib/preloadable_libintl.so
 #if [[ -f /usr/bin/gettext ]]
@@ -886,6 +887,489 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf gettext-0.21
+
+#### Bison-3.7.5 ####
+
+#echo -e "#### Bison-3.7.5 ####" >> $ERROR
+#echo -e "Installing Bison-3.7.5"
+#tar xf /sources/bison-3.7.5.tar.xz -C /sources
+#cd /sources/bison-3.7.5
+#./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.7.5 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/bison ]]
+#then
+#	echo -e "Bison-3.7.5 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Bison-3.7.5 not installed [${RED}FAILED${WHITE}]"
+#fi
+#cd /sources
+#rm -rf bison-3.7.5
+
+#### Grep-3.6 ####
+
+#echo -e "#### Grep-3.6 ####" >> $ERROR
+#echo -e "Installing Grep-3.6"
+#tar xf /sources/grep-3.6.tar.xz -C /sources
+#cd /sources/grep-3.6
+#./configure --prefix=/usr --bindir=/bin > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /bin/grep ]]
+#then
+#	 echo -e "Grep-3.6 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Grep-3.6 not installed [${RED}FAILED${WHITE}]"
+#fi
+#cd /sources
+#rm -rf grep-3.6
+#
+##### Bash-5.1 ####
+#
+#echo -e "#### Bash-5.1 ####" >> $ERROR
+#echo -e "Installing Bash-5.1"
+#tar xf /sources/bash-5.1.tar.gz -C /sources
+#cd /sources/bash-5.1
+#sed -i '/^bashline.o:.*shmbchar.h/a bashline.o: ${DEFDIR}/builtext.h' Makefile.in
+#./configure --prefix=/usr \
+#	--docdir=/usr/share/doc/bash-5.1 \
+#	--without-bash-malloc \
+#	--with-installed-readline > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#chown -v tester .
+#su tester << EOF >> $CHECK 2>> $ERROR
+#PATH=$PATH make tests < $(tty)
+#EOF
+#make install > /dev/null 2>> $ERROR
+#mv -f /usr/bin/bash /bin
+#exec /bin/bash --login +h
+#if [[ $? -eq 0 ]]
+#then
+#	echo -e "Bash-5.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Bash-5.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf bash-5.1
+#
+##### Libtool-2.4.6 ####
+#
+#echo -e "#### Libtool-2.4.6 ####" >> $ERROR
+#echo -e "Installing Libtool-2.4.6"
+#tar xf /sources/libtool-2.4.6.tar.xz -C /sources
+#cd /sources/libtool-2.4.6
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#rm -f /usr/lib/libltdl.a
+#if [[ -f /usr/bin/libtool ]]
+#then
+#	echo -e "Libtool-2.4.6 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Libtool-2.4.6 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf libtool-2.4.6
+#
+##### GDBM-1.19 ####
+#
+#echo -e "#### GDBM-1.19 ####" >> $ERROR
+#echo -e "Installing GDBM-1.19"
+#tar xf /sources/gdbm-1.19.tar.gz -C /sources
+#cd /sources/gdbm-1.19
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--enable-libgdbm-compat > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/gdbm_dump ]]
+#then
+#	echo -e "GDBM-1.19 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "GDBM-1.19 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf gdbm-1.19
+#
+##### Gperf-3.1 ####
+#
+#echo -e "#### Gperf-3.1 ####" >> $ERROR
+#echo -e "Installing Gperf-3.1"
+#tar xf /sources/gperf-3.1.tar.gz -C /sources
+#cd /sources/gperf-3.1
+#./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make -j1 check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/gperf ]]
+#then
+#	echo -e "Gperf-3.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Gperf-3.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf gperf-3.1
+#
+
+#### Expat-2.2.10 ####
+
+#echo -e "#### Expat-2.2.10 ####" >> $ERROR
+#echo -e "Installing Expat-2.2.10"
+#tar xf /sources/expat-2.2.10.tar.xz -C /sources
+#cd /sources/expat-2.2.10
+#./configure --prefix=/usr \
+#	--disable-static \
+#	--docdir=/usr/share/doc/expat-2.2.10 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#install -m644 doc/*.{html,png,css} /usr/share/doc/expat-2.2.10
+#if [[ -f /usr/bin/xmlwf ]]
+#then
+#	echo -e "Expat-2.2.10 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Expat-2.2.10 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf expat-2.2.10
+
+#### Inetutils-2.0 ####
+#
+#echo -e "#### Inetutils-2.0 ####" >> $ERROR
+#echo -e "Installing Inetutils-2.0"
+#tar xf /sources/inetutils-2.0.tar.xz -C /sources
+#cd /sources/inetutils-2.0
+#./configure --prefix=/usr \
+#	--localstatedir=/var \
+#	--disable-logger \
+#	--disable-whois \
+#	--disable-rcp \
+#	--disable-rexec \
+#	--disable-rlogin \
+#	--disable-rsh \
+#	--disable-servers > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/bin/{hostname,ping,ping6,traceroute} /bin
+#mv /usr/bin/ifconfig /sbin
+#if [[ -f /bin/ping ]]
+#then
+#	echo -e "Inetutils-2.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Inetutils-2.0 not installed [${RED}FAILED${WHITE}]"
+#fi
+#cd /sources
+#rm -rf inetutils-2.0
+
+#### Perl-5.32.1 ####
+#
+#echo -e "#### Perl-5.32.1 ####" >> $ERROR
+#echo -e "Installing Perl-5.32.1"
+#tar xf /sources/perl-5.32.1.tar.xz -C /sources
+#cd /sources/perl-5.32.1
+#export BUILD_ZLIB=False
+#export BUILD_BZIP2=0
+#sh Configure -des \
+#	-Dprefix=/usr \
+#	-Dvendorprefix=/usr \
+#	-Dprivlib=/usr/lib/perl5/5.32/core_perl \
+#	-Darchlib=/usr/lib/perl5/5.32/core_perl \
+#	-Dsitelib=/usr/lib/perl5/5.32/site_perl \
+#	-Dsitearch=/usr/lib/perl5/5.32/site_perl \
+#	-Dvendorlib=/usr/lib/perl5/5.32/vendor_perl \
+#	-Dvendorarch=/usr/lib/perl5/5.32/vendor_perl \
+#	-Dman1dir=/usr/share/man/man1 \
+#	-Dman3dir=/usr/share/man/man3 \
+#	-Dpager="/usr/bin/less -isR" \
+#	-Duseshrplib \
+#	-Dusethreads > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#unset BUILD_ZLIB BUILD_BZIP2
+#if [[ -f /usr/bin/perl ]]
+#then
+#	echo -e "Perl-5.32.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	 echo -e "Perl-5.32.1 not installed [${RED}FAILED${WHITE}]"
+#fi
+#cd /sources
+#rm -rf perl-5.32.1
+#
+
+#### XML::Parser-2.46 ####
+#
+#echo -e "#### XML::Parser-2.46 #####" >> $ERROR
+#echo -e "Installing XML::Parser-2.46"
+#tar xf /sources/XML-Parser-2.46.tar.gz -C /sources
+#cd /sources/XML-Parser-2.46
+#perl Makefile.PL > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/lib/perl5/5.32/site_perl/auto/XML/Parser/Expat/Expat.so ]]
+#then
+#	echo -e "XML-Parser-2.46 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "XML-Parser-2.46 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf XML-Parser-2.46
+#
+
+#### Intltool-0.51.0 ####
+
+#echo -e "#### Intltool-0.51.0 ####" >> $ERROR
+#echo -e "Installing Intltool-0.51.0"
+#tar xf /sources/intltool-0.51.0.tar.gz -C /sources
+#cd /sources/intltool-0.51.0
+#sed -i 's:\\\${:\\\$\\{:' intltool-update.in
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#install -Dm644 doc/I18N-HOWTO /usr/share/doc/intltool-0.51.0/I18N-HOWTO
+#if [[ -f /usr/bin/intltool-extract ]]
+#then
+#	echo -e "Intltool-0.51.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Intltool-0.51.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf intltool-0.51.0
+
+
+#### Autoconf-2.71 ####
+
+#echo -e "#### Autoconf-2.71 ####" >> $ERROR
+#echo -e "Installing Autoconf-2.71"
+#tar xf /sources/autoconf-2.71.tar.xz -C /sources
+#cd /sources/autoconf-2.71
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/autoconf ]]
+#then
+#	echo -e "Autoconf-2.71 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Autoconf-2.71 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf autoconf-2.71
+
+#### Automake-1.16.3 ####
+
+#echo -e "#### Automake-1.16.3 ####" >> $ERROR
+#echo -e "Installing Automake-1.16.3"
+#tar xf /sources/automake-1.16.3.tar.xz -C /sources
+#cd /sources/automake-1.16.3
+#sed -i "s/''/etags/" t/tags-lisp-space.sh
+#./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.3 > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make -j4 check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/automake ]]
+#then
+#	echo -e "Automake-1.16.3 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Automake-1.16.3 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf automake-1.16.3
+
+#### Kmod-28 ####
+#
+#echo -e "#### Kmod-28 ####" >> $ERROR
+#echo -e "Installing Kmod-28"
+#tar xf /sources/kmod-28.tar.xz -C /sources
+#cd /sources/kmod-28
+#./configure --prefix=/usr \
+#	--bindir=/bin \
+#	--sysconfdir=/etc \
+#	--with-rootlibdir=/lib \
+#	--with-xz \
+#	--with-zstd \
+#	--with-zlib > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#for target in depmod insmod lsmod modinfo modprobe rmmod; do
+#	ln -sf ../bin/kmod /sbin/$target
+#done
+#ln -sf kmod /bin/lsmod
+#if [[ -f /bin/kmod ]]
+#then
+#	echo -e "Kmod-28 installed [${GREEN}OK${WHITE}]"
+#else
+#	 echo -e "Kmod-28 not installed [${RED}FAILED${WHITE}]"
+#	 exit 2
+#fi
+#cd /sources
+#rm -rf kmod-28
+#
+
+#### Libelf ####
+
+#echo -e "#### Libelf ####" >> $ERROR
+#echo -e "Installing Libelf"
+#tar xf /sources/elfutils-0.183.tar.bz2 -C /sources
+#cd /sources/elfutils-0.183
+#./configure --prefix=/usr \
+#	--disable-debuginfod \
+#	--enable-libdebuginfod=dummy \
+#	--libdir=/lib > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make -C libelf install > /dev/null 2>> $ERROR
+#install -m644 config/libelf.pc /usr/lib/pkgconfig
+#rm /lib/libelf.a
+#if [[ -f /lib/libelf.so ]]
+#then
+#	echo -e "Libelf installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Libelf not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf elfutils-0.183
+
+#### Libffi-3.3 ####
+
+#echo -e "#### Libffi-3.3 ####" >> $ERROR
+#echo -e "Installing Libffi-3.3"
+#tar xf /sources/libffi-3.3.tar.gz -C /sources
+#cd /sources/libffi-3.3
+#./configure --prefix=/usr --disable-static --with-gcc-arch=native > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/lib/libffi.so ]]
+#then
+#	 echo -e "Libffi-3.3 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Libffi-3.3 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf libffi-3.3
+
+#### OpenSSL-1.1.1j ####
+
+#echo -e "#### OpenSSL-1.1.1j ####" >> $ERROR
+#echo -e "Installing OpenSSL-1.1.1j..."
+#tar xf /sources/openssl-1.1.1j.tar.gz -C /sources
+#cd /sources/openssl-1.1.1j
+#./config --prefix=/usr \
+#	--openssldir=/etc/ssl \
+#	--libdir=lib \
+#	shared \
+#	zlib-dynamic > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
+#sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
+#make MANSUFFIX=ssl install > /dev/null 2>> $ERROR
+#mv /usr/share/doc/openssl /usr/share/doc/openssl-1.1.1j
+#cp -fr doc/* /usr/share/doc/openssl-1.1.1j
+#if [[ -f /usr/lib/libcrypto.so ]]
+#then
+#	echo -e "OpenSSL-1.1.1j installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "OpenSSL-1.1.1j not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf openssl-1.1.1j
+
+#### Python-3.9.2 ####
+
+#echo -e "#### Python-3.9.2 ####" >> $ERROR
+#echo -e "Installing Python-3.9.2..."
+#tar xf /sources/Python-3.9.2.tar.xz -C /sources
+#cd /sources/Python-3.9.2
+#./configure --prefix=/usr \
+#	--enable-shared \
+#	--with-system-expat \
+#	--with-system-ffi \
+#	--with-ensurepip=yes > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make test >> $CHECK 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#install -dm755 /usr/share/doc/python-3.9.2/html
+#tar --strip-components=1 \
+#	--no-same-owner \
+#	--no-same-permissions \
+#	-C /usr/share/doc/python-3.9.2/html \
+#	-xvf ../python-3.9.2-docs-html.tar.bz2
+#if [[ -f /usr/bin/python3 ]]
+#then
+#	echo -e "Python-3.9.2 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Python-3.9.2 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf Python-3.9.2
+
+#### Ninja-1.10.2 ####
+
+#echo -e "#### Ninja-1.10.2 ####" >> $ERROR
+#echo -e "Installing Ninja-1.10.2"
+#tar xf /sources/ninja-1.10.2.tar.gz -C /sources
+#cd /sources/ninja-1.10.2
+#sed -i '/int Guess/a \
+#  int j = 0;\
+#  char* jobs = getenv( "NINJAJOBS" );\
+#  if ( jobs != NULL ) j = atoi( jobs );\
+#  if ( j > 0 ) return j;\
+#' src/ninja.cc
+#python3 configure.py --bootstrap > /dev/null 2>> $ERROR
+#./ninja ninja_test > /dev/null 2>> $ERROR
+#./ninja_test --gtest_filter=-SubprocessTest.SetWithLots > /dev/null 2>> $ERROR
+#install -m755 ninja /usr/bin/
+#install -Dm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
+#install -Dm644 misc/zsh-completion /usr/share/zsh/site-functions/_ninja
+#if [[ -f /usr/bin/ninja ]]
+#then 
+#	echo -e "Ninja-1.10.2 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Ninja-1.10.2 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf ninja-1.10.2
+
+#### Meson-0.57.1 ####
+
+#echo -e "#### Meson-0.57.1 ####" >> $ERROR
+#echo -e "Installing Meson-0.57.1"
+#tar xf /sources/meson-0.57.1.tar.gz -C /sources
+#cd /sources/meson-0.57.1
+#python3 setup.py build > /dev/null 2>> $ERROR
+#python3 setup.py install --root=dest > /dev/null 2>> $ERROR
+#cp -r dest/* /
+#if [[ -f /usr/bin/meson ]]
+#then
+#	echo -e "Meson-0.57.1  installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Meson-0.57.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf meson-0.57.1
 
 EOT
 
