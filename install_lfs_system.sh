@@ -1022,7 +1022,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Expat-2.2.10 ####
 
 #echo -e "#### Expat-2.2.10 ####" >> $ERROR
-#echo -e "Installing Expat-2.2.10"
+#echo -e "Installing Expat-2.2.10..."
 #tar xf /sources/expat-2.2.10.tar.xz -C /sources
 #cd /sources/expat-2.2.10
 #./configure --prefix=/usr \
@@ -1045,7 +1045,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Inetutils-2.0 ####
 #
 #echo -e "#### Inetutils-2.0 ####" >> $ERROR
-#echo -e "Installing Inetutils-2.0"
+#echo -e "Installing Inetutils-2.0..."
 #tar xf /sources/inetutils-2.0.tar.xz -C /sources
 #cd /sources/inetutils-2.0
 #./configure --prefix=/usr \
@@ -1074,7 +1074,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Perl-5.32.1 ####
 #
 #echo -e "#### Perl-5.32.1 ####" >> $ERROR
-#echo -e "Installing Perl-5.32.1"
+#echo -e "Installing Perl-5.32.1..."
 #tar xf /sources/perl-5.32.1.tar.xz -C /sources
 #cd /sources/perl-5.32.1
 #export BUILD_ZLIB=False
@@ -1110,7 +1110,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### XML::Parser-2.46 ####
 #
 #echo -e "#### XML::Parser-2.46 #####" >> $ERROR
-#echo -e "Installing XML::Parser-2.46"
+#echo -e "Installing XML::Parser-2.46..."
 #tar xf /sources/XML-Parser-2.46.tar.gz -C /sources
 #cd /sources/XML-Parser-2.46
 #perl Makefile.PL > /dev/null 2>> $ERROR
@@ -1131,7 +1131,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Intltool-0.51.0 ####
 
 #echo -e "#### Intltool-0.51.0 ####" >> $ERROR
-#echo -e "Installing Intltool-0.51.0"
+#echo -e "Installing Intltool-0.51.0..."
 #tar xf /sources/intltool-0.51.0.tar.gz -C /sources
 #cd /sources/intltool-0.51.0
 #sed -i 's:\\\${:\\\$\\{:' intltool-update.in
@@ -1154,7 +1154,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Autoconf-2.71 ####
 
 #echo -e "#### Autoconf-2.71 ####" >> $ERROR
-#echo -e "Installing Autoconf-2.71"
+#echo -e "Installing Autoconf-2.71..."
 #tar xf /sources/autoconf-2.71.tar.xz -C /sources
 #cd /sources/autoconf-2.71
 #./configure --prefix=/usr > /dev/null 2>> $ERROR
@@ -1174,7 +1174,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Automake-1.16.3 ####
 
 #echo -e "#### Automake-1.16.3 ####" >> $ERROR
-#echo -e "Installing Automake-1.16.3"
+#echo -e "Installing Automake-1.16.3..."
 #tar xf /sources/automake-1.16.3.tar.xz -C /sources
 #cd /sources/automake-1.16.3
 #sed -i "s/''/etags/" t/tags-lisp-space.sh
@@ -1195,7 +1195,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Kmod-28 ####
 #
 #echo -e "#### Kmod-28 ####" >> $ERROR
-#echo -e "Installing Kmod-28"
+#echo -e "Installing Kmod-28..."
 #tar xf /sources/kmod-28.tar.xz -C /sources
 #cd /sources/kmod-28
 #./configure --prefix=/usr \
@@ -1225,7 +1225,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Libelf ####
 
 #echo -e "#### Libelf ####" >> $ERROR
-#echo -e "Installing Libelf"
+#echo -e "Installing Libelf..."
 #tar xf /sources/elfutils-0.183.tar.bz2 -C /sources
 #cd /sources/elfutils-0.183
 #./configure --prefix=/usr \
@@ -1250,7 +1250,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Libffi-3.3 ####
 
 #echo -e "#### Libffi-3.3 ####" >> $ERROR
-#echo -e "Installing Libffi-3.3"
+#echo -e "Installing Libffi-3.3..."
 #tar xf /sources/libffi-3.3.tar.gz -C /sources
 #cd /sources/libffi-3.3
 #./configure --prefix=/usr --disable-static --with-gcc-arch=native > /dev/null 2>> $ERROR
@@ -1327,7 +1327,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Ninja-1.10.2 ####
 
 #echo -e "#### Ninja-1.10.2 ####" >> $ERROR
-#echo -e "Installing Ninja-1.10.2"
+#echo -e "Installing Ninja-1.10.2..."
 #tar xf /sources/ninja-1.10.2.tar.gz -C /sources
 #cd /sources/ninja-1.10.2
 #sed -i '/int Guess/a \
@@ -1355,7 +1355,7 @@ chroot "$LFS" /usr/bin/env -i \
 #### Meson-0.57.1 ####
 
 #echo -e "#### Meson-0.57.1 ####" >> $ERROR
-#echo -e "Installing Meson-0.57.1"
+#echo -e "Installing Meson-0.57.1..."
 #tar xf /sources/meson-0.57.1.tar.gz -C /sources
 #cd /sources/meson-0.57.1
 #python3 setup.py build > /dev/null 2>> $ERROR
@@ -1370,6 +1370,172 @@ chroot "$LFS" /usr/bin/env -i \
 #fi
 #cd /sources
 #rm -rf meson-0.57.1
+
+#### Coreutils-8.32 ####
+
+#echo -e "#### Coreutils-8.32 ####" >> $ERROR
+#echo -e "Installing Coreutils-8.32..."
+#tar xf /sources/coreutils-8.32.tar.xz -C /sources
+#cd /sources/coreutils-8.32
+#patch -Np1 -i ../coreutils-8.32-i18n-1.patch > /dev/null 2>> $ERROR
+#sed -i '/test.lock/s/^/#/' gnulib-tests/gnulib.mk
+#autoreconf -fiv
+#FORCE_UNSAFE_CONFIGURE=1 ./configure \
+#	--prefix=/usr \
+#	--enable-no-install-program=kill,uptime > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make NON_ROOT_USERNAME=tester check-root > /dev/null 2>> $ERROR
+#echo "dummy:x:102:tester" >> /etc/group
+#chown -R tester .
+#su tester -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes check" >> $CHECK 2>> $ERROR
+#sed -i '/dummy/d' /etc/group
+#make install > /dev/null 2>> $ERROR
+#mv /usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /bin
+#mv /usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} /bin
+#mv /usr/bin/{rmdir,stty,sync,true,uname} /bin
+#mv /usr/bin/chroot /usr/sbin
+#mv /usr/share/man/man1/chroot.1 /usr/share/man/man8/chroot.8
+#sed -i 's/"1"/"8"/' /usr/share/man/man8/chroot.8
+#mv /usr/bin/{head,nice,sleep,touch} /bin
+#if [[ -f /bin/cat ]]
+#then
+#	echo -e "Coreutils-8.32 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Coreutils-8.32 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf coreutils-8.32
+
+#### Check-0.15.2 ####
+
+#echo -e "#### Check-0.15.2 ####" >> $ERROR
+#echo -e "Installing Check-0.15.2..."
+#tar xf /sources/check-0.15.2.tar.gz -C /sources
+#cd /sources/check-0.15.2
+#./configure --prefix=/usr --disable-static > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make docdir=/usr/share/doc/check-0.15.2 install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/diff ]]
+#then
+#	echo -e "Check-0.15.2 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Check-0.15.2 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf check-0.15.2
+
+#### Gawk-5.1.0 ####
+
+#echo -e "#### Gawk-5.1.0 ####" >> $ERROR
+#echo -e "Installing Gawk-5.1.0..."
+#tar xf /sources/gawk-5.1.0.tar.xz -C /sources
+#cd /sources/gawk-5.1.0
+#sed -i 's/extras//' Makefile.in
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mkdir /usr/share/doc/gawk-5.1.0
+#cp doc/{awkforai.txt,*.{eps,pdf,jpg}} /usr/share/doc/gawk-5.1.0
+#if [[ -f /usr/bin/awk ]]
+#then
+#	echo -e "Gawk-5.1.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Gawk-5.1.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf gawk-5.1.0
+
+#### Findutils-4.8.0 ####
+
+#echo -e "#### Findutils-4.8.0 ####" >> $ERROR
+#echo -e "Installing Findutils-4.8.0"
+#tar xf /sources/findutils-4.8.0.tar.xz -C /sources
+#cd /sources/findutils-4.8.0
+#./configure --prefix=/usr --localstatedir=/var/lib/locate > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#chown -R tester .
+#su tester -c "PATH=$PATH make check" > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/bin/find /bin
+#sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/bin/updatedb
+#if [[ -f /bin/find ]]
+#then
+#	echo -e "Findutils-4.8.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Findutils-4.8.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf findutils-4.8.0
+
+#### Groff-1.22.4 ####
+
+#echo -e "#### Groff-1.22.4 ####" >> $ERROR
+#echo -e "Installing Groff-1.22.4..."
+#tar xf /sources/groff-1.22.4.tar.gz -C /sources
+#cd /sources/groff-1.22.4
+#PAGE=A4 ./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make -j1 > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/groff ]]
+#then
+#	echo -e "Groff-1.22.4 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Groff-1.22.4 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf groff-1.22.4
+
+#### GRUB-2.04 ####
+
+#echo -e "#### GRUB-2.04 ####" >> $ERROR
+#echo -e "Installing GRUB-2.04..."
+#tar xf /sources/grub-2.04.tar.xz -C /sources
+#cd /sources/grub-2.04
+#sed "s/gold-version/& -R .note.gnu.property/" \
+#	-i Makefile.in grub-core/Makefile.in
+#./configure --prefix=/usr \
+#	--sbindir=/sbin \
+#	--sysconfdir=/etc \
+#	--disable-efiemu \
+#	--disable-werror > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+#if [[ -f /sbin/grub-install ]]
+#then
+#	echo -e "GRUB-2.04 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "GRUB-2.04 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf grub-2.04
+
+#### Less-563 ####
+
+#echo -e "#### Less-563 ####" >> $ERROR
+#echo -e "Installing Less-563..."
+#tar xf /sources/less-563.tar.gz -C /sources
+#cd /sources/less-563
+#./configure --prefix=/usr --sysconfdir=/etc > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/less ]]
+#then
+#	echo -e "Less-563 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Less-563 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf less-563
 
 EOT
 
