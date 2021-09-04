@@ -1537,6 +1537,211 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf less-563
 
+#### Gzip-1.10 ####
+
+#echo -e "#### Gzip-1.10 ####" >> $ERROR
+#echo -e "Installing Gzip-1.10..."
+#tar xf /sources/gzip-1.10.tar.xz -C /sources
+#cd /sources/gzip-1.10
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/bin/gzip /bin
+#if [[ -f /bin/gzip ]]
+#then
+#	echo -e "Gzip-1.10 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Gzip-1.10 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf /sources/gzip-1.10
+
+#### IPRoute2-5.10.0 ####
+
+#echo -e "#### IPRoute2-5.10.0 ####" >> $ERROR
+#echo -e "Installing IPRoute2-5.10.0..."
+#tar xf /sources/iproute2-5.10.0.tar.xz -C /sources
+#cd /sources/iproute2-5.10.0
+#sed -i /ARPD/d Makefile
+#rm -f man/man8/arpd.8
+#sed -i 's/.m_ipt.o//' tc/Makefile
+#make > /dev/null 2>> $ERROR
+#make DOCDIR=/usr/share/doc/iproute2-5.10.0 install > /dev/null 2>> $ERROR
+#if [[ -f /sbin/ip ]]
+#then
+#	echo -e "IPRoute2-5.10.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "IPRoute2-5.10.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf iproute2-5.10.0
+
+#### Kbd-2.4.0 ####
+
+#echo -e "#### Kbd-2.4.0 ####" >> $ERROR
+#echo -e "Installing Kbd-2.4.0..."
+#tar xf /sources/kbd-2.4.0.tar.xz -C /sources
+#cd /sources/kbd-2.4.0
+#patch -Np1 -i ../kbd-2.4.0-backspace-1.patch > /dev/null 2>> $ERROR
+#sed -i '/RESIZECONS_PROGS=/s/yes/no/' configure
+#sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
+#./configure --prefix=/usr --disable-vlock > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mkdir /usr/share/doc/kbd-2.4.0
+#cp -R docs/doc/* /usr/share/doc/kbd-2.4.0
+#if [[ -f /usr/bin/loadkeys ]]
+#then
+#	echo -e "Kbd-2.4.0 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Kbd-2.4.0 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf kbd-2.4.0
+
+
+#### Libpipeline-1.5.3 ####
+
+#echo -e "#### Libpipeline-1.5.3 ####" >> $ERROR
+#echo -e "Installing Libpipeline-1.5.3..."
+#tar xf /sources/libpipeline-1.5.3.tar.gz -C /sources
+#cd /sources/libpipeline-1.5.3
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/lib/libpipeline.so ]]
+#then
+#	echo -e "Libpipeline-1.5.3 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Libpipeline-1.5.3 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf libpipeline-1.5.3
+
+#### Make-4.3 ####
+
+#echo -e "#### Make-4.3 ####" >> $ERROR
+#echo -e "Installing Make-4.3..."
+#tar xf /sources/make-4.3.tar.gz -C /sources
+#cd /sources/make-4.3
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/make ]]
+#then
+#	echo -e "Make-4.3 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Make-4.3 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf make-4.3
+
+#### Patch-2.7.6 ####
+
+#echo -e "#### Patch-2.7.6 ####" >> $ERROR
+#echo -e "Installing Patch-2.7.6..."
+#tar xf /sources/patch-2.7.6.tar.xz -C /sources
+#cd /sources/patch-2.7.6
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/patch ]]
+#then
+#	echo -e "Patch-2.7.6 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Patch-2.7.6 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf patch-2.7.6
+
+#### Man-DB-2.9.4 ####
+
+#echo -e "#### Man-DB-2.9.4 ####" >> $ERROR
+#echo -e "Installing Man-DB-2.9.4..."
+#tar xf /sources/man-db-2.9.4.tar.xz -C /sources
+#cd /sources/man-db-2.9.4
+#sed -i '/find/s@/usr@@' init/systemd/man-db.service.in
+#./configure --prefix=/usr \
+#	--docdir=/usr/share/doc/man-db-2.9.4 \
+#	--sysconfdir=/etc \
+#	--disable-setuid \
+#	--enable-cache-owner=bin \
+#	--with-browser=/usr/bin/lynx \
+#	--with-vgrind=/usr/bin/vgrind \
+#	--with-grap=/usr/bin/grap > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /usr/bin/man ]]
+#then
+#	echo -e "Man-DB-2.9.4 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Man-DB-2.9.4 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf man-db-2.9.4
+
+#### Tar-1.34 ####
+
+#echo -e "#### Tar-1.34 ####" >> $ERROR
+#echo -e "Installing Tar-1.34..."
+#tar xf /sources/tar-1.34.tar.xz -C /sources
+#cd /sources/tar-1.34
+#FORCE_UNSAFE_CONFIGURE=1 \
+#	./configure --prefix=/usr \
+#		--bindir=/bin > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#make -C doc install-html docdir=/usr/share/doc/tar-1.34 > /dev/null 2>> $ERROR
+#if [[ -f /bin/tar ]]
+#then
+#	echo -e "Tar-1.34 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Tar-1.34 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf tar-1.34
+
+#### Texinfo-6.7 ####
+
+#echo -e "#### Texinfo-6.7 ####" >> $ERROR
+#echo -e "Installing Texinfo-6.7..."
+#tar xf /sources/texinfo-6.7.tar.xz -C /sources
+#cd /sources/texinfo-6.7
+#./configure --prefix=/usr > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#pushd /usr/share/info
+#	rm dir
+#	for f in *
+#		do install-info $f dir 2>/dev/null
+#	done
+#popd
+#if [[ -f /usr/bin/info ]]
+#then
+#	echo -e "Texinfo-6.7 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Texinfo-6.7 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf texinfo-6.7
+
 EOT
 
 if [[ $? -eq 2 ]]
