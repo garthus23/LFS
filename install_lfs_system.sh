@@ -1742,6 +1742,271 @@ chroot "$LFS" /usr/bin/env -i \
 #cd /sources
 #rm -rf texinfo-6.7
 
+#### Systemd-247 ####
+#echo -e "#### Systemd-247 ####" >> $ERROR
+#echo -e "Installing Systemd-247.."
+#tar xf /sources/systemd-247.tar.gz -C /sources
+#cd /sources/systemd-247
+#patch -Np1 -i ../systemd-247-upstream_fixes-1.patch > /dev/null 2>> $ERROR
+#ln -sf /bin/true /usr/bin/xsltproc
+#tar -xf ../systemd-man-pages-247.tar.xz
+#sed '181,$ d' -i src/resolve/meson.build
+#sed -i 's/GROUP="render"/GROUP="video"/' rules.d/50-udev-default.rules.in
+#mkdir -p build
+#cd build
+#LANG=en_US.UTF-8 \
+#meson --prefix=/usr \
+#	--sysconfdir=/etc \
+#	--localstatedir=/var \
+#	-Dblkid=true \
+#	-Dbuildtype=release \
+#	-Ddefault-dnssec=no \
+#	-Dfirstboot=false \
+#	-Dinstall-tests=false \
+#	-Dkmod-path=/bin/kmod \
+#	-Dldconfig=false \
+#	-Dmount-path=/bin/mount \
+#	-Drootprefix= \
+#	-Drootlibdir=/lib \
+#	-Dsplit-usr=true \
+#	-Dsulogin-path=/sbin/sulogin \
+#	-Dsysusers=false \
+#	-Dumount-path=/bin/umount \
+#	-Db_lto=false \
+#	-Drpmmacrosdir=no \
+#	-Dhomed=false \
+#	-Duserdb=false \
+#	-Dman=true \
+#	-Dmode=release \
+#	-Ddocdir=/usr/share/doc/systemd-247 \
+#	.. > /dev/null 2>> $ERROR
+#LANG=en_US.UTF-8 ninja
+#LANG=en_US.UTF-8 ninja install
+#rm -f /usr/bin/xsltproc
+#rm -rf /usr/lib/pam.d
+#systemd-machine-id-setup
+#systemctl preset-all
+#systemctl disable systemd-time-wait-sync.service
+#if [[ -f /bin/systemctl ]]
+#then
+#	echo -e "Systemd-247 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Systemd-247 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf systemd-247
+
+#### D-Bus-1.12.20 ####
+
+#echo -e "#### D-Bus-1.12.20 ####" >> $ERROR
+#echo -e "Installing D-Bus-1.12.20..."
+#tar xf /sources/dbus-1.12.20.tar.gz -C /sources
+#cd /sources/dbus-1.12.20
+#./configure --prefix=/usr \
+#	--sysconfdir=/etc \
+#	--localstatedir=/var \
+#	--disable-static \
+#	--disable-doxygen-docs \
+#	--disable-xml-docs \
+#	--docdir=/usr/share/doc/dbus-1.12.20 \
+#	--with-console-auth-dir=/run/console \
+#	--with-system-pid-file=/run/dbus/pid \
+#	--with-system-socket=/run/dbus/system_bus_socket > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/lib/libdbus-1.so.* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so
+#ln -sf /etc/machine-id /var/lib/dbus
+#if [[ -f /usr/bin/dbus-daemon ]]
+#then
+#	echo -e "D-Bus-1.12.20 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "D-Bus-1.12.20 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf dbus-1.12.20
+
+#### Procps-ng-3.3.17 ####
+
+#echo -e "#### Procps-ng-3.3.17 ####" >> $ERROR
+#echo -e "Installing Procps-ng-3.3.17"
+#tar xf /sources/procps-ng-3.3.17.tar.xz -C /sources
+#cd /sources/procps-3.3.17
+#./configure --prefix=/usr \
+#	--exec-prefix= \
+#	--libdir=/usr/lib \
+#	--docdir=/usr/share/doc/procps-ng-3.3.17 \
+#	--disable-static \
+#	--disable-kill \
+#	--with-systemd > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#mv /usr/lib/libprocps.so.* /lib
+#ln -sf ../../lib/$(readlink /usr/lib/libprocps.so) /usr/lib/libprocps.so
+#if [[ -f /bin/ps ]]
+#then
+#	echo -e "Procps-ng-3.3.17 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Procps-ng-3.3.17 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf procps-3.3.17
+
+#### Util-linux-2.36.2 ####
+
+#echo -e "#### Util-linux-2.36.2 ####" >> $ERROR
+#echo -e "Installing Util-linux-2.36.2"
+#tar xf /sources/util-linux-2.36.2.tar.xz -C /sources
+#cd /sources/util-linux-2.36.2
+#./configure ADJTIME_PATH=/var/lib/hwclock/adjtime \
+#	--docdir=/usr/share/doc/util-linux-2.36.2 \
+#	--disable-chfn-chsh \
+#	--disable-login \
+#	--disable-nologin \
+#	--disable-su \
+#	--disable-setpriv \
+#	--disable-runuser \
+#	--disable-pylibmount \
+#	--disable-static \
+#	--without-python \
+#	runstatedir=/run > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#chown -R tester .
+#su tester -c "make -k check" > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#if [[ -f /bin/dmesg ]]
+#then
+#	echo -e "Util-linux-2.36.2 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Util-linux-2.36.2 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf util-linux-2.36.2
+
+#### E2fsprogs-1.46.1 ####
+
+#echo -e "#### E2fsprogs-1.46.1 ####" >> $ERROR
+#echo -e "Installing E2fsprogs-1.46.1"
+#tar xf /sources/e2fsprogs-1.46.1.tar.gz -C /sources
+#cd /sources/e2fsprogs-1.46.1
+#mkdir build
+#cd build
+#../configure --prefix=/usr \
+#	--bindir=/bin \
+#	--with-root-prefix="" \
+#	--enable-elf-shlibs \
+#	--disable-libblkid \
+#	--disable-libuuid \
+#	--disable-uuidd \
+#	--disable-fsck > /dev/null 2>> $ERROR
+#make > /dev/null 2>> $ERROR
+#make check > /dev/null 2>> $ERROR
+#make install > /dev/null 2>> $ERROR
+#rm -f /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+#gunzip /usr/share/info/libext2fs.info.gz
+#install-info --dir-file=/usr/share/info/dir /usr/share/info/libext2fs.info
+#makeinfo -o doc/com_err.info ../lib/et/com_err.texinfo > /dev/null 2>> $ERROR
+#install -m644 doc/com_err.info /usr/share/info
+#install-info --dir-file=/usr/share/info/dir /usr/share/info/com_err.info
+#if [[ -f /bin/chattr ]]
+#then
+#	echo -e "E2fsprogs-1.46.1 installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "E2fsprogs-1.46.1 not installed [${RED}FAILED${WHITE}]"
+#	exit 2
+#fi
+#cd /sources
+#rm -rf e2fsprogs-1.46.1
+
+#save_lib="ld-2.33.so libc-2.33.so libpthread-2.33.so libthread_db-1.0.so"
+#cd /lib
+#for LIB in $save_lib; do
+#	objcopy --only-keep-debug $LIB $LIB.dbg
+#	strip --strip-unneeded $LIB
+#	objcopy --add-gnu-debuglink=$LIB.dbg $LIB
+#done
+
+#save_usrlib="libquadmath.so.0.0.0 libstdc++.so.6.0.28
+#	libitm.so.1.0.0 libatomic.so.1.2.0"
+
+#cd /usr/lib
+
+#for LIB in $save_usrlib; do
+#	objcopy --only-keep-debug $LIB $LIB.dbg
+#	strip --strip-unneeded $LIB
+#	objcopy --add-gnu-debuglink=$LIB.dbg $LIB
+#done
+#unset LIB save_lib save_usrlib
+#
+#find /usr/lib -type f -name \*.a \
+#	-exec strip --strip-debug {} ';' > /dev/null 2>> $ERROR
+#find /lib /usr/lib -type f -name \*.so* ! -name \*dbg \
+#	-exec strip --strip-unneeded {} ';' > /dev/null 2>> $ERROR
+#find /{bin,sbin} /usr/{bin,sbin,libexec} -type f \
+#	-exec strip --strip-all {} ';' > /dev/null 2>> $ERROR
+
+#rm -rf /tmp/*
+
+#EOT
+
+
+chroot "$LFS" /usr/bin/env -i \
+	HOME=/root \
+	TERM="$TERM" \
+	ERROR="/error" \
+	CHECK="/make_check" \
+	PS1='(lfs chroot) \u:\w\$ ' \
+	GREEN='\e[32m' \
+	RED='\e[31m' \
+	WHITE='\e[0m' \
+	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+	/bin/bash --login << "EOT"
+
+#find /usr/lib /usr/libexec -name \*.la -delete
+#find /usr -depth -name $(uname -m)-lfs-linux-gnu\* | xargs rm -rf
+#rm -rf /tools
+#userdel -r tester
+#
+#ln -s /dev/null /etc/systemd/network/99-default.link
+#
+#cat > /etc/systemd/network/10-lan0.link << "EOF"
+#[Match]
+## Change the MAC address as appropriate for your network device
+#MACAddress=30:9c:23:94:13:82
+#[Link]
+#Name=lan0
+#EOF
+
+#cat > /etc/systemd/network/10-eth-static.network << "EOF"
+#[Match]
+#Name=lan0
+#[Network]
+#Address=192.168.1.50/24
+#Gateway=192.168.1.1
+#DNS=1.1.1.1
+#Domains=nodomain.no
+#EOF
+
+##ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+##cat > /etc/resolv.conf << "EOF"
+### Begin /etc/resolv.conf
+### End /etc/resolv.conf
+##EOF
+
+#echo "gregopc" > /etc/hostname
+
+#cat > /etc/hosts << "EOF"
+## Begin /etc/hosts
+#127.0.0.1 localhost.localdomain localhost
+## End /etc/hosts
+#EOF
+
 EOT
 
 if [[ $? -eq 2 ]]
