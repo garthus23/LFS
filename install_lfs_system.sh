@@ -15,17 +15,17 @@ TERM=xterm-256color
 
 echo -e "#### Install basic System ####"
 
-chroot "$LFS" /usr/bin/env -i \
-	HOME=/root \
-	TERM="$TERM" \
-	ERROR="/error" \
-	CHECK="/make_check" \
-	PS1='(lfs chroot) \u:\w\$ ' \
-	GREEN='\e[32m' \
-	RED='\e[31m' \
-	WHITE='\e[0m' \
-	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
-	/bin/bash --login +h << "EOT"
+#chroot "$LFS" /usr/bin/env -i \
+#	HOME=/root \
+#	TERM="$TERM" \
+#	ERROR="/error" \
+#	CHECK="/make_check" \
+#	PS1='(lfs chroot) \u:\w\$ ' \
+#	GREEN='\e[32m' \
+#	RED='\e[31m' \
+#	WHITE='\e[0m' \
+#	PATH=/bin:/usr/bin:/sbin:/usr/sbin \
+#	/bin/bash --login +h << "EOT"
 #
 #
 ##### Man-pages-5.10 ####
@@ -1973,7 +1973,9 @@ chroot "$LFS" /usr/bin/env -i \
 #userdel -r tester
 #
 #ln -s /dev/null /etc/systemd/network/99-default.link
-#
+
+### set name/mac address of ether ###
+
 #cat > /etc/systemd/network/10-lan0.link << "EOF"
 #[Match]
 ## Change the MAC address as appropriate for your network device
@@ -1981,6 +1983,8 @@ chroot "$LFS" /usr/bin/env -i \
 #[Link]
 #Name=lan0
 #EOF
+
+### configure ethernet int ####
 
 #cat > /etc/systemd/network/10-eth-static.network << "EOF"
 #[Match]
@@ -1992,6 +1996,8 @@ chroot "$LFS" /usr/bin/env -i \
 #Domains=nodomain.no
 #EOF
 
+### set /etc/resolv.conf dns server file ###
+
 ##ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 
 ##cat > /etc/resolv.conf << "EOF"
@@ -1999,14 +2005,91 @@ chroot "$LFS" /usr/bin/env -i \
 ### End /etc/resolv.conf
 ##EOF
 
+### set hosts/hostname ####
+
 #echo "gregopc" > /etc/hostname
 
 #cat > /etc/hosts << "EOF"
 ## Begin /etc/hosts
-#127.0.0.1 localhost.localdomain localhost
+#127.0.0.1 localhost.nodomain.no localhost
 ## End /etc/hosts
 #EOF
 
+#### disable sntp ###
+
+systemctl disable systemd-timesyncd
+
+### set keyboard layout ###
+
+cat > /etc/vconsole.conf << "EOF"
+KEYMAP=fr-fr
+EOF
+
+#### configuration for readline library ####
+
+cat > /etc/inputrc << "EOF"
+# Begin /etc/inputrc
+# Modified by Chris Lynn <roryo@roryo.dynup.net>
+
+# Allow the command prompt to wrap to the next line
+set horizontal-scroll-mode Off
+
+# Enable 8bit input
+set meta-flag On
+set input-meta On
+
+# Turns off 8th bit stripping
+set convert-meta Off
+
+# Keep the 8th bit for display
+set output-meta On
+
+# none, visible or audible
+set bell-style none
+
+# All of the following map the escape sequence of the value
+# contained in the 1st argument to the readline specific functions
+"\eOd": backward-word
+"\eOc": forward-word
+
+# for linux console
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+
+# for xterm
+"\eOH": beginning-of-line
+"\eOF": end-of-line
+
+# for Konsole
+"\e[H": beginning-of-line
+"\e[F": end-of-line
+
+# End /etc/inputrc
+EOF
+
+### list of loggin shell ###
+
+cat > /etc/shells << "EOF"
+# Begin /etc/shells
+/bin/sh
+/bin/bash
+# End /etc/shells
+EOF
+
+### Disabling Screen Clearing at Boot Time ####
+mkdir -pv /etc/systemd/system/getty@tty1.service.d
+
+cat > /etc/systemd/system/getty@tty1.service.d/noclear.conf << EOF
+[Service]
+TTYVTDisallocate=no
+EOF
+
+### Disabling tmpfs for /tmp ###
+ln -sfv /dev/null /etc/systemd/system/tmp.mount
 EOT
 
 if [[ $? -eq 2 ]]
