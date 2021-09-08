@@ -1954,6 +1954,15 @@ echo -e "#### Install basic System ####"
 
 #EOT
 
+#### copy the kernel conf to the kernel sources ###
+
+## kernel conf generated with defconfig, removed kvm and ipv6
+## activation of the book recommendation features
+
+#tar xf /mnt/lfs/sources/linux-5.10.17.tar.xz -C /mnt/lfs/sources
+#cp .config /mnt/lfs/sources/linux-5.10.17
+#chown -R root:root /mnt/lfs/sources/linux-5.10.17
+#mount /dev/sda2 /mnt/lfs/boot
 
 chroot "$LFS" /usr/bin/env -i \
 	HOME=/root \
@@ -2015,81 +2024,135 @@ chroot "$LFS" /usr/bin/env -i \
 ## End /etc/hosts
 #EOF
 
-#### disable sntp ###
+##### disable sntp ###
+#
+#systemctl disable systemd-timesyncd
+#
+#### set keyboard layout ###
+#
+#cat > /etc/vconsole.conf << "EOF"
+#KEYMAP=fr-fr
+#EOF
+#
+##### configuration for readline library ####
+#
+#cat > /etc/inputrc << "EOF"
+## Begin /etc/inputrc
+## Modified by Chris Lynn <roryo@roryo.dynup.net>
+#
+## Allow the command prompt to wrap to the next line
+#set horizontal-scroll-mode Off
+#
+## Enable 8bit input
+#set meta-flag On
+#set input-meta On
+#
+## Turns off 8th bit stripping
+#set convert-meta Off
+#
+## Keep the 8th bit for display
+#set output-meta On
+#
+## none, visible or audible
+#set bell-style none
+#
+## All of the following map the escape sequence of the value
+## contained in the 1st argument to the readline specific functions
+#"\eOd": backward-word
+#"\eOc": forward-word
+#
+## for linux console
+#"\e[1~": beginning-of-line
+#"\e[4~": end-of-line
+#"\e[5~": beginning-of-history
+#"\e[6~": end-of-history
+#"\e[3~": delete-char
+#"\e[2~": quoted-insert
+#
+## for xterm
+#"\eOH": beginning-of-line
+#"\eOF": end-of-line
+#
+## for Konsole
+#"\e[H": beginning-of-line
+#"\e[F": end-of-line
+#
+## End /etc/inputrc
+#EOF
+#
+#### list of loggin shell ###
+#
+#cat > /etc/shells << "EOF"
+## Begin /etc/shells
+#/bin/sh
+#/bin/bash
+## End /etc/shells
+#EOF
+#
+#### Disabling Screen Clearing at Boot Time ####
+#mkdir -pv /etc/systemd/system/getty@tty1.service.d
+#
+#cat > /etc/systemd/system/getty@tty1.service.d/noclear.conf << EOF
+#[Service]
+#TTYVTDisallocate=no
+#EOF
+#
 
-systemctl disable systemd-timesyncd
+#### Disabling tmpfs for /tmp ###
+##ln -sfv /dev/null /etc/systemd/system/tmp.mount
 
-### set keyboard layout ###
+#### core dump size limitation ####
 
-cat > /etc/vconsole.conf << "EOF"
-KEYMAP=fr-fr
-EOF
+#mkdir -pv /etc/systemd/coredump.conf.d
+#cat > /etc/systemd/coredump.conf.d/maxuse.conf << EOF
+#[Coredump]
+#MaxUse=5G
+#EOF
 
-#### configuration for readline library ####
+#### Making the LFS System Bootable ####
 
-cat > /etc/inputrc << "EOF"
-# Begin /etc/inputrc
-# Modified by Chris Lynn <roryo@roryo.dynup.net>
 
-# Allow the command prompt to wrap to the next line
-set horizontal-scroll-mode Off
+### creation of the mount file ###
 
-# Enable 8bit input
-set meta-flag On
-set input-meta On
+#cat > /etc/fstab << "EOF"
+## Begin /etc/fstab
+## file system
+## mount-point type options dump fsck
+##				order
 
-# Turns off 8th bit stripping
-set convert-meta Off
+#/dev/sda3	/	ext4	defaults	1 1
+#/dev/sda4	/home	ext4	defaults	1 1
+## End /etc/fstab
+#EOF
 
-# Keep the 8th bit for display
-set output-meta On
+### Installation of the kernel ###
 
-# none, visible or audible
-set bell-style none
+#cd /sources/linux-5.10.17
+#make
+#make modules_install
+#cp -i arch/x86/boot/bzImage /boot/vmlinuz-5.10.17-lfs-10.1-systemd
+#cp -i System.map /boot/System.map-5.10.17
+#cp -i .config /boot/config-5.10.17
+#install -d /usr/share/doc/linux-5.10.17
+#cp -r Documentation/* /usr/share/doc/linux-5.10.17
+#install -m755 -d /etc/modprobe.d
 
-# All of the following map the escape sequence of the value
-# contained in the 1st argument to the readline specific functions
-"\eOd": backward-word
-"\eOc": forward-word
+### load usb driver ###
 
-# for linux console
-"\e[1~": beginning-of-line
-"\e[4~": end-of-line
-"\e[5~": beginning-of-history
-"\e[6~": end-of-history
-"\e[3~": delete-char
-"\e[2~": quoted-insert
+#cat > /etc/modprobe.d/usb.conf << "EOF"
+## Begin /etc/modprobe.d/usb.conf
+#install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
+#install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
+## End /etc/modprobe.d/usb.conf
+#EOF
 
-# for xterm
-"\eOH": beginning-of-line
-"\eOF": end-of-line
+#if [[ -f /boot/vmlinuz-5.10.17-lfs-10.1-systemd ]]
+#then
+#	echo -e "Kernel installed [${GREEN}OK${WHITE}]"
+#else
+#	echo -e "Kernel not installed [${RED}FAILED${WHITE}]"
+#fi
 
-# for Konsole
-"\e[H": beginning-of-line
-"\e[F": end-of-line
-
-# End /etc/inputrc
-EOF
-
-### list of loggin shell ###
-
-cat > /etc/shells << "EOF"
-# Begin /etc/shells
-/bin/sh
-/bin/bash
-# End /etc/shells
-EOF
-
-### Disabling Screen Clearing at Boot Time ####
-mkdir -pv /etc/systemd/system/getty@tty1.service.d
-
-cat > /etc/systemd/system/getty@tty1.service.d/noclear.conf << EOF
-[Service]
-TTYVTDisallocate=no
-EOF
-
-### Disabling tmpfs for /tmp ###
-ln -sfv /dev/null /etc/systemd/system/tmp.mount
 EOT
 
 if [[ $? -eq 2 ]]
