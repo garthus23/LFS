@@ -2153,9 +2153,37 @@ chroot "$LFS" /usr/bin/env -i \
 #	echo -e "Kernel not installed [${RED}FAILED${WHITE}]"
 #fi
 
+#grub-install /dev/sda
+
+#cat > /boot/grub/grub.cfg << "EOF"
+# Begin /boot/grub/grub.cfg
+#set default=0
+#set timeout=10
+#insmod ext2
+#set root=(hd0,2)
+#menuentry "GNU/Linux, Linux 5.10.17-lfs-10.1-systemd" {
+#	linux /vmlinuz-5.10.17-lfs-10.1-systemd root=/dev/sda3 ro
+#}
+#EOF
+
+#echo 10.1-systemd > /etc/lfs-release
+
+#cat > /etc/os-release << "EOF"
+#NAME="Linux From Scratch"
+#VERSION="10.1-systemd"
+#ID=lfs
+#PRETTY_NAME="Linux From Scratch 10.1-systemd"
+#VERSION_CODENAME="<your name here>"
+#EOF
+
 EOT
 
 if [[ $? -eq 2 ]]
 then
 	exit 2
 fi
+
+
+umount -Rv $LFS
+
+
