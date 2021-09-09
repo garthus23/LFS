@@ -1959,10 +1959,8 @@ echo -e "#### Install basic System ####"
 ## kernel conf generated with defconfig, removed kvm and ipv6
 ## activation of the book recommendation features
 
-#tar xf /mnt/lfs/sources/linux-5.10.17.tar.xz -C /mnt/lfs/sources
-#cp .config /mnt/lfs/sources/linux-5.10.17
-#chown -R root:root /mnt/lfs/sources/linux-5.10.17
-#mount /dev/sda2 /mnt/lfs/boot
+mount /dev/sda2 /mnt/lfs/boot
+cp kernel_conf /mnt/lfs/sources
 
 chroot "$LFS" /usr/bin/env -i \
 	HOME=/root \
@@ -2127,54 +2125,70 @@ chroot "$LFS" /usr/bin/env -i \
 
 ### Installation of the kernel ###
 
-#cd /sources/linux-5.10.17
-#make
-#make modules_install
-#cp -i arch/x86/boot/bzImage /boot/vmlinuz-5.10.17-lfs-10.1-systemd
-#cp -i System.map /boot/System.map-5.10.17
-#cp -i .config /boot/config-5.10.17
-#install -d /usr/share/doc/linux-5.10.17
-#cp -r Documentation/* /usr/share/doc/linux-5.10.17
-#install -m755 -d /etc/modprobe.d
 
-### load usb driver ###
+echo -e "### Kernel Install ###" >> $ERROR
+echo -e "Installing the Kernel..."
+tar xf /sources/linux-5.10.17.tar.xz -C /sources
+cd /sources/linux-5.10.17
+cp ../kernel_conf ./.config
+make > /dev/null 2>> $ERROR
+make modules_install > /dev/null 2>> $ERROR
+cp -i arch/x86/boot/bzImage /boot/vmlinuz-5.10.17-lfs-10.1-systemd
+cp -i System.map /boot/System.map-5.10.17
+cp -i .config /boot/config-5.10.17
+install -d /usr/share/doc/linux-5.10.17
+cp -r Documentation/* /usr/share/doc/linux-5.10.17
+install -m755 -d /etc/modprobe.d
 
-#cat > /etc/modprobe.d/usb.conf << "EOF"
-## Begin /etc/modprobe.d/usb.conf
-#install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
-#install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
-## End /etc/modprobe.d/usb.conf
-#EOF
+## load usb driver ###
 
-#if [[ -f /boot/vmlinuz-5.10.17-lfs-10.1-systemd ]]
-#then
-#	echo -e "Kernel installed [${GREEN}OK${WHITE}]"
-#else
-#	echo -e "Kernel not installed [${RED}FAILED${WHITE}]"
-#fi
+cat > /etc/modprobe.d/usb.conf << "EOF"
+# Begin /etc/modprobe.d/usb.conf
+install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
+install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
+# End /etc/modprobe.d/usb.conf
+EOF
 
-#grub-install /dev/sda
+if [[ -f /boot/vmlinuz-5.10.17-lfs-10.1-systemd ]]
+then
+	echo -e "Kernel installed [${GREEN}OK${WHITE}]"
+else
+	echo -e "Kernel not installed [${RED}FAILED${WHITE}]"
+	exit 2
+fi
 
-#cat > /boot/grub/grub.cfg << "EOF"
+## Install Grub2 ###
+
+echo -e " #### Install Grub2 ####" >> $ERROR
+echo -e "Installing Grub2..."
+grub-install /dev/sda
+cat > /boot/grub/grub.cfg << "EOF"
 # Begin /boot/grub/grub.cfg
-#set default=0
-#set timeout=10
-#insmod ext2
-#set root=(hd0,2)
-#menuentry "GNU/Linux, Linux 5.10.17-lfs-10.1-systemd" {
-#	linux /vmlinuz-5.10.17-lfs-10.1-systemd root=/dev/sda3 ro
-#}
-#EOF
+set default=0
+set timeout=5
+insmod ext4
+set root=(hd0,2)
+menuentry "GNU/Linux, Linux 5.10.17-lfs-10.1-systemd" {
+	linux /vmlinuz-5.10.17-lfs-10.1-systemd root=/dev/sda3 nomodeset ro
+}
+EOF
 
-#echo 10.1-systemd > /etc/lfs-release
+if [[ -f /boot/grub/grub.cfg ]]
+then
+	echo -e "Grub installed [${GREEN}OK${WHITE}]"
+else
+	echo -e "Grub not installed [${RED}FAILED${WHITE}]"
+	exit 2
+fi
+echo 10.1-systemd > /etc/lfs-release
 
-#cat > /etc/os-release << "EOF"
-#NAME="Linux From Scratch"
-#VERSION="10.1-systemd"
-#ID=lfs
-#PRETTY_NAME="Linux From Scratch 10.1-systemd"
-#VERSION_CODENAME="<your name here>"
-#EOF
+cat > /etc/os-release << "EOF"
+NAME="Linux From Scratch"
+VERSION="10.1-systemd"
+ID=lfs
+PRETTY_NAME="Linux From Scratch 10.1-systemd"
+VERSION_CODENAME="<your name here>"
+EOF
 
 EOT
 
